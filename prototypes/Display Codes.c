@@ -11,7 +11,7 @@ otherwise plagiarized the work of other students and/or persons.
 #include <time.h>
 
 typedef char string20[20];
-typedef string20 passengers[16];
+typedef string20 passengers[16];	
 
 /* mainMenu displays the main menu of the program
 */
