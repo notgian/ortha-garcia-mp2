@@ -13,7 +13,7 @@ struct passenger {
 
 struct bus {
     int tripNumber;
-    struct passenger passengers[1]; //To be determined how this will work, since there is a system that only allows one special shuttle;
+    int passengers[17]; //To be determined how this will work, since there is a system that only allows one special shuttle;
     struct bus *next;
 };
 
@@ -21,26 +21,27 @@ int main()
 {
     struct bus bus1;
     bus1.tripNumber = 111;
+    // struct passenger passengers1[16]; 
     
     struct bus bus2;
     bus2.tripNumber = 122;
+
+    struct bus bus3;
+    bus2.tripNumber = 133;
     
-    printf("ONE\n");
 
-    int i;
-    for (i=0; i<1; i++)
-    {
-        struct passenger newPassenger1;
-        struct passenger newPassenger2;
-        bus1.passengers[i] = newPassenger1;
-        bus2.passengers[i] = newPassenger2;
-    }
+    // int i;
+    // for (i=0; i<1; i++)
+    // {
+    //     struct passenger newPassenger1;
+    //     struct passenger newPassenger2;
+    //     bus1.passengers[i] = newPassenger1;
+    //     bus2.passengers[i] = newPassenger2;
+    // }
 
-    printf("TWO\n");
 
-    *bus1.next = bus2;
+    bus2.next = &bus3;
 
-    printf("THREE\n");
 
     // struct bus *nextBus = bus1.next;
 
