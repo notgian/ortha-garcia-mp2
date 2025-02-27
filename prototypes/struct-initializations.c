@@ -4,6 +4,7 @@
 typedef char String20[21];
 
 struct Passenger {
+    int onboard;
     String20 firstName;
     String20 lastName;
     int priority;
@@ -25,6 +26,7 @@ struct Passenger
 createEmptyPassenger() 
 {
     struct Passenger emptyPassenger;
+    emptyPassenger.onboard = 0;
     emptyPassenger.priority = 0;
     emptyPassenger.id = 0;
     emptyPassenger.dropOff = 0;
@@ -63,7 +65,9 @@ setEmptyPassenger(struct Passenger *passengerList, int n)
    @param busesManilaToLaguna - array of buses, size 10  
    @param busesLagunaToManila - index of buses, size 12
    @return void
-*/ void initializeBuses(struct Bus busesManilaToLaguna[10], struct Bus busesLagunaToManila[12])
+*/ 
+void 
+initializeBuses(struct Bus busesManilaToLaguna[10], struct Bus busesLagunaToManila[12])
 {
     struct Bus busInst; // Instantiation of a bus for defining all buses
 
@@ -142,6 +146,89 @@ setEmptyPassenger(struct Passenger *passengerList, int n)
     }
     
 }
+
+/*
+==================================
+   Bus and Passenger Operations
+==================================
+*/
+
+/* getPassengerCount: Takes a bus and returns the amount of passengers onboard
+   @param bus - bus structure  
+   @return int - the number of passengers onboard
+*/ 
+int 
+getPassengerCount(struct Bus bus)
+{
+    int i;
+    int count = 0;
+    for (i=0; i<16; i++)
+    {
+        count += bus.passengers[i].onboard;
+    }
+    return count;
+}
+
+/* isTripFull: Takes a bus and returns 1 if the trip is full, 0 if not
+   @param bus - bus structure  
+   @return int - returns 1 if the trip is full, and 0 otherwise
+*/ 
+int 
+isTripFull(struct Bus bus)
+{
+    int count = getPassengerCount(bus);
+    if (count >=16) return 1;
+    else return 0;
+}
+
+/*
+========================
+  Passenger Operations
+========================
+*/
+
+void 
+InputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus)
+{
+    if (bus->tripNumber == -1)
+    {
+        printf("There are no more remaining bus trips!");
+        return;
+    }
+
+    if (isTripFull(*bus))
+    {
+        // Check for the lowst passenger
+        struct Passenger *firstLowestPassenger = NULL;
+        int i;
+        for (i=0; i<16; i++)
+        {
+            if (priority > bus->passengers[i].priority && bus->passengers[i].priority > 0)
+            {
+                *firstLowestPassenger = bus->passengers[i];
+            }
+        }
+        
+        /*
+        If high priority passenger
+            (loop through each passenger, get first lowest priority passenger)
+            move first lowest priority passenger to the next trip
+        Else
+            reject passenger
+        */
+    }
+    else
+    {
+        // Assign Passenger to trip
+    }
+
+}
+
+void movePassenger()
+{
+
+}
+
 
 
 // int main() 
