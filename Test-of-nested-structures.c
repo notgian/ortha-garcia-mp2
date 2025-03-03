@@ -16,11 +16,12 @@ typedef char String30[31];
 struct passenger{
 	int nPriority;
     int idNo;
-	struct {
+	struct{
 		string20 firstName;
     	string20 lastName;		
 	}Name;
     int dropOff; // TBD how the final implementation of drop-off points will be
+    char seat;
 };
 
 struct bus {
@@ -29,6 +30,9 @@ struct bus {
 	int nPassengerCount;
 };
 
+struct trips{
+	struct bus buses[21];
+};
 /* mainMenu displays the main menu of the program
 */
 void 
@@ -90,8 +94,8 @@ void displayDropOff(int nTripNo)
 	   || nTripNo == 107 || nTripNo == 109)
 	{
 		printf("==========Drop-Off Points==========\n");
-		printf("1 - Mamplasan Toll Exit\n 2 - Phase 5, San Jose Vilage\n");
-		printf("3 - Milagros Del Rosario Building - East Canopy");
+		printf("1 - Mamplasan Toll Exit\n2 - Phase 5, San Jose Vilage\n");
+		printf("3 - Milagros Del Rosario Building - East Canopy\n");
 	}
 	else if(nTripNo == 102 || nTripNo == 104 || nTripNo == 106
 			|| nTripNo == 108)
@@ -102,6 +106,35 @@ void displayDropOff(int nTripNo)
 	}
 }
 
+void checkTripNum(int nTripNo, struct trips *arrow){
+		switch(nTripNo)
+		{
+			case 1:
+				setPassengerInfo(&arrow->buses[0]);
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+			case 10:	
+			case 11:
+			case 12:
+			case 13:
+			case 14:
+			case 15:
+			case 16:
+			case 17:
+			case 18:
+			case 19:
+			case 20:
+			case 21:
+			default:
+				break;
+		}
+}
 //This function generates a display of the seat plan within a trip.
 void 
 viewPassengerCount(char arr[], int nRush)
@@ -175,11 +208,11 @@ viewPassengerCount(char arr[], int nRush)
 }
 
 //Takes the input of the passenger and returns trip number for assignment.
-int encodeTripNumber(int nFull)
+int encodeTripNumber()
 {
 	int trip;
 	printf("What trip will you be boarding?\n\n");
-	displayTripList(nFull);
+	displayTripList(0);
 	
 	printf("Enter Trip Number:");
 	scanf("%d", &trip);
@@ -192,6 +225,7 @@ void setPassengerInfo(struct bus *trip)
 {
 		if(trip->nPassengerCount < 16)
 		{
+		printf("==========Enter Details Below==========\n");
 		trip->nPassengerCount += 1;
 		printf("ID Number: ");
 		scanf("%d", &trip->person[trip->nPassengerCount - 1].idNo);
@@ -205,79 +239,71 @@ void setPassengerInfo(struct bus *trip)
 		displayDropOff(trip->nTripID);
 		printf("Drop off Point: ");
 		scanf("%d", &trip->person[trip->nPassengerCount - 1].dropOff);
+		trip->person[trip->nPassengerCount - 1].seat = 'X';
 		}
-		else if
+		
 }
 
 
 int main()
 {
-	int nMain, nPersonnelMenu, nPassengerMenu, nTripNumber;
+	int nMain, nPersonnelMenu, nPassengerMenu, nTripNumber, i, j;
 	
-	//Creating structs for the buses.
-	struct bus AE101, AE102, AE103, AE104, AE105, AE106, AE107, AE108, AE109,
-				AE150, AE151, AE152, AE153, AE154, AE155, AE156, AE157, AE158,
-				AE159, AE160, AE161;
-				
-	//Initializing each structures' trip ID.
-	AE101.nTripID = 101;
-	AE102.nTripID = 102;
-	AE103.nTripID = 103;
-	AE104.nTripID = 104;
-	AE105.nTripID = 105;
-	AE106.nTripID = 106;
-	AE107.nTripID = 107;
-	AE108.nTripID = 108;
-	AE109.nTripID = 109;
-	AE150.nTripID = 150;
-	AE151.nTripID = 151;
-	AE152.nTripID = 152;
-	AE153.nTripID = 153;
-	AE154.nTripID = 154;
-	AE155.nTripID = 155;
-	AE156.nTripID = 156;
-	AE157.nTripID = 157;
-	AE158.nTripID = 158;
-	AE159.nTripID = 159;
-	AE160.nTripID = 160;
-	AE161.nTripID = 161;
+	struct trips arrow;
 	
-	//Initializing trips' passenger count.
-	AE101.nPassengerCount = 0;
-	AE102.nPassengerCount = 0;
-	AE103.nPassengerCount = 0;
-	AE104.nPassengerCount = 0;
-	AE105.nPassengerCount = 0;
-	AE106.nPassengerCount = 0;
-	AE107.nPassengerCount = 0;
-	AE108.nPassengerCount = 0;
-	AE109.nPassengerCount = 0;
-	AE150.nPassengerCount = 0;
-	AE151.nPassengerCount = 0;
-	AE152.nPassengerCount = 0;
-	AE153.nPassengerCount = 0;
-	AE154.nPassengerCount = 0;
-	AE155.nPassengerCount = 0;
-	AE156.nPassengerCount = 0;
-	AE157.nPassengerCount = 0;
-	AE158.nPassengerCount = 0;
-	AE159.nPassengerCount = 0;
-	AE160.nPassengerCount = 0;
-	AE161.nPassengerCount = 0;
+	//Initializing the trip IDs
+	arrow.buses[0].nTripID = 101;
+	arrow.buses[1].nTripID = 102;
+	arrow.buses[2].nTripID = 103;
+	arrow.buses[3].nTripID = 104;
+	arrow.buses[4].nTripID = 105;
+	arrow.buses[5].nTripID = 106;
+	arrow.buses[6].nTripID = 107;
+	arrow.buses[7].nTripID = 108;
+	arrow.buses[8].nTripID = 109;
+	arrow.buses[9].nTripID = 150;
+	arrow.buses[10].nTripID = 151;
+	arrow.buses[11].nTripID = 152;
+	arrow.buses[12].nTripID = 153;
+	arrow.buses[13].nTripID = 154;
+	arrow.buses[14].nTripID = 155;
+	arrow.buses[15].nTripID = 156;
+	arrow.buses[16].nTripID = 157;
+	arrow.buses[17].nTripID = 158;
+	arrow.buses[18].nTripID = 159;
+	arrow.buses[19].nTripID = 160;
+	arrow.buses[20].nTripID = 161;
+	
+	//Initializing starting passenger count.
+	for(i = 0; i < 21; i++)
+		arrow.buses[i].nPassengerCount = 0;
+		
+	//Initializing seats to be empty.
+	for(i=0; i < 21; i++)
+		for(j=0; j < 16; j++)
+		arrow.buses[i].person[j].seat = 'O';
 	
  	do
 	{
 		mainMenu();
 			scanf("%d", &nMain);
 			printf("\n\n");
-	
-		
 		switch(nMain)
 		{
 		case 1:
 			passengerMenu();
 			scanf("%d", &nPassengerMenu);
-			printf("\n");		
+			printf("\n");
+			switch(nPassengerMenu)
+			{
+				case 1: 
+					printf("==========Desired Trip==========\n");
+					nTripNumber = encodeTripNumber();
+					checkTripNum(nTripNumber, &arrow);
+					break;
+				case 2:
+					printf("Returning to Main Menu\n");
+			}		
 			break;
 		case 2:
 			arrowsPersonnelMenu();
