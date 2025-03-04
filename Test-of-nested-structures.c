@@ -106,44 +106,86 @@ void displayDropOff(int nTripNo)
 	}
 }
 
+/* Serves as a middleman to check which trip to assign the passenger data to.*/
 void checkTripNum(int nTripNo, struct trips *arrow){
 		switch(nTripNo)
 		{
 			case 1:
 				setPassengerInfo(&arrow->buses[0]);
+				break;
 			case 2:
+				setPassengerInfo(&arrow->buses[1]);
+				break;
 			case 3:
+				setPassengerInfo(&arrow->buses[2]);
+				break;
 			case 4:
+				setPassengerInfo(&arrow->buses[3]);
+				break;
 			case 5:
+				setPassengerInfo(&arrow->buses[4]);
+				break;
 			case 6:
+				setPassengerInfo(&arrow->buses[5]);
+				break;
 			case 7:
+				setPassengerInfo(&arrow->buses[6]);
+				break;
 			case 8:
+				setPassengerInfo(&arrow->buses[7]);
+				break;
 			case 9:
-			case 10:	
+				setPassengerInfo(&arrow->buses[8]);
+				break;
+			case 10:
+				setPassengerInfo(&arrow->buses[9]);
+				break;
 			case 11:
+				setPassengerInfo(&arrow->buses[10]);
+				break;
 			case 12:
+				setPassengerInfo(&arrow->buses[11]);
+				break;
 			case 13:
+				setPassengerInfo(&arrow->buses[12]);
+				break;
 			case 14:
+				setPassengerInfo(&arrow->buses[13]);
+				break;
 			case 15:
+				setPassengerInfo(&arrow->buses[14]);
+				break;
 			case 16:
+				setPassengerInfo(&arrow->buses[15]);
+				break;
 			case 17:
+				setPassengerInfo(&arrow->buses[16]);
+				break;
 			case 18:
+				setPassengerInfo(&arrow->buses[17]);
+				break;
 			case 19:
+				setPassengerInfo(&arrow->buses[18]);
+				break;
 			case 20:
+				setPassengerInfo(&arrow->buses[19]);
+				break;
 			case 21:
+				setPassengerInfo(&arrow->buses[20]);
+				break;
 			default:
 				break;
 		}
 }
 //This function generates a display of the seat plan within a trip.
 void 
-viewPassengerCount(char arr[], int nRush)
+viewPassengerCount(struct bus buses, int number)
 {
 	int nRow, nColumn, n;
 	
 	n = 0;
 	
-	if(nRush != 1)
+	if(buses.nPassengerCount <= 13)
 		for(nRow = 0; nRow < 5; nRow++)
 		{
 			if(nRow < 4)
@@ -151,7 +193,7 @@ viewPassengerCount(char arr[], int nRush)
 				printf("+-----+-----+-----+\n");
 				for(nColumn = 0; nColumn < 3; nColumn++)
 				{
-					printf("|  %1c  ", arr[n]);
+					printf("|  %1c  ", buses.person[n].seat);
 					n++;
 				}
 				printf("|");
@@ -161,7 +203,7 @@ viewPassengerCount(char arr[], int nRush)
 			else
 			{
 				printf("+-----+-----+\n");
-				printf("|  %1c  |  D  |\n", arr[n]);
+				printf("|  %1c  |  D  |\n", buses.person[n].seat);
 				printf("+-----+-----+\n");
 			}
 		}
@@ -173,7 +215,7 @@ viewPassengerCount(char arr[], int nRush)
 				printf("+-----+-----+-----+-----+\n");
 				for(nColumn = 0; nColumn < 4; nColumn++)
 				{
-					printf("|  %1c  ", arr[n]);
+					printf("|  %1c  ", buses.person[n].seat);
 					n++;
 				}
 				printf("|");
@@ -190,7 +232,7 @@ viewPassengerCount(char arr[], int nRush)
 					else
 					{
 					
-						printf("|  %1c  ", arr[n]);
+						printf("|  %1c  ", buses.person[n].seat);
 						n++;
 					}
 				}
@@ -201,7 +243,7 @@ viewPassengerCount(char arr[], int nRush)
 			else
 			{
 				printf("+-----+-----+\n");
-				printf("|  %1c  |  D  |\n", arr[n]);
+				printf("|  %1c  |  D  |\n", buses.person[n].seat);
 				printf("+-----+-----+\n");
 			}
 		}		
@@ -312,6 +354,9 @@ int main()
 				{
 					case 1:
 						displayTripList(0);
+						printf("Which trip would you like to view?\n");
+						scanf("%d", &nTripNumber);
+						viewPassengerCount(arrow.buses[nTripNumber-1], nTripNumber);
 						break;                    
 					case 2:
 						break;
