@@ -16,11 +16,11 @@ otherwise plagiarized the work of other students and/or persons.
    		Bus and Passenger Operations
 	====================================
 
-NOTE FOR DROP OFF POINTS:
+NOTE FOR DROP OFF POINTS (SAME NUMBERS WILL BE USED FOR EMBARKATION POINTS):
 - 10010 - Mamplasan Toll Exit
 - 10020 - Phase 5, San Jose Vilage
-- 10030 - Milagros Del Rosario Building - East Canopy
-- 10040 - Laguna Blvd. Guard House(across Paseo PHOENIX Gasoline Station)
+- 10030 - Laguna Blvd. Guard House(across Paseo PHOENIX Gasoline Station)
+- 10040 - Milagros Del Rosario Building - East Canopy
 
 - 20010 - Petron Gasoline Station along Gil Puyat Avenue
 - 20020 - College of St. Benilde (CSB) along Taft Avenue
@@ -89,33 +89,27 @@ displayTripList(int nFull)
 {
 	printf("\n==========List of Trips==========\n");
 
-	printf("\n==========MANILA-LAGUNA==========\n");
-	printf("AE-101\n");
-	printf("AE-102\n");
-	printf("AE-103\n");
-	printf("AE-104\n");
-	printf("AE-105\n");
-	printf("AE-106\n");
-	printf("AE-107\n");
-	printf("AE-108\n");
-	printf("AE-109\n");
-	if(nFull)
-		printf("AE-110 (Special Trip)\n");
+	printf("|====MANILA-LAGUNA====|====LAGUNA-MANILA====|\n");
+	printf("|        AE-101       |        AE-150       |\n");
+	printf("|        AE-102       |        AE-151       |\n");
+	printf("|        AE-103       |        AE-152       |\n");
+	printf("|        AE-104       |        AE-153       |\n");
+	printf("|        AE-105       |        AE-154       |\n");
+	printf("|        AE-106       |        AE-155       |\n");
+	printf("|        AE-107       |        AE-156       |\n");
+	printf("|        AE-108       |        AE-157       |\n");
+	printf("|        AE-109       |        AE-158       |\n");
+	printf("|                     |        AE-159       |\n");
+	printf("|                     |        AE-160       |\n");
 
-	printf("\n==========LAGUNA-MANILA==========\n");
-	printf("AE-150\n");
-	printf("AE-151\n");
-	printf("AE-152\n");
-	printf("AE-153\n");
-	printf("AE-154\n");
-	printf("AE-155\n");
-	printf("AE-156\n");
-	printf("AE-157\n");
-	printf("AE-158\n");
-	printf("AE-159\n");
-	printf("AE-160\n");
-	if(nFull)
-		printf("AE-161 (Special Trip)\n");	
+	if (nFull)
+	{
+		printf("|===============SPECIAL TRIPS===============|\n");
+		printf("|        AE-110       |        AE-161       |\n");
+	}
+	
+	printf("|===========================================|\n");
+
 }
 
 /* displayDropOff: displays the list of drop off points
@@ -165,13 +159,14 @@ int displayDropOff(int nTripNo)
 
 void clearScreen()
 {
-	printf("\e[1;1H\e[2J");
+	printf("\e[1;1H\e[2J"); // Regex clear function
+	printf("\n");
 }
 
 void pauseAndContinueOnReturn()
 {
-	printf("\nPress any key to continue");
-	fflush(stdin);
+	printf("\nTyoe any character and press return to continue\n");
+	scanf(" \n");
 	getchar();
 }
 
@@ -193,25 +188,33 @@ void
 printDropOffPointFromCode(int code)
 {
 	if (code == 10010) 
-		printf(" %-50s", "Mamplasan Toll Exit");
+		printf("%-50s", "Mamplasan Toll Exit");
 	else if (code == 10020) 
-		printf(" %-50s", "Phase 5, San Jose Vilage");
+		printf("%-50s", "Phase 5, San Jose Vilage");
 	else if (code == 10030) 
-		printf(" %-50s", "Milagros Del Rosario Building - East Canopy");
+		printf("%-50s", "Laguna Blvd. Guard House");
 	else if (code == 10040) 
-		printf(" %-50s", "Laguna Blvd. Guard House");
+		printf("%-50s", "Milagros Del Rosario Building - East Canopy");
 	else if (code == 20010) 
-		printf(" %-50s", "Petron Gasoline Station along Gil Puyat Avenue");
+		printf("%-50s", "Petron Gasoline Station along Gil Puyat Avenue");
 	else if (code == 20020) 
-		printf(" %-50s", "College of St. Benilde (CSB) along Taft Avenue");
+		printf("%-50s", "College of St. Benilde (CSB) along Taft Avenue");
 	else if (code == 20030) 
-		printf(" %-50s", "Gate 4: Gokongwei Gate");
+		printf("%-50s", "Gate 4: Gokongwei Gate");
 	else if (code == 20040) 
-		printf(" %-50s", "Gate 2: North Gate (HSSH)");
+		printf("%-50s", "Gate 2: North Gate (HSSH)");
 	else if (code == 20050) 
-		printf(" %-50s", "Gate 1: South Gate (LS Building Entrance)");
+		printf("%-50s", "Gate 1: South Gate (LS Building Entrance)");
 }
 
+int
+dropOffInRoute(int dropOff, int route)
+{
+	// if (route == 100)
+
+	return 0;
+
+}
 
 /*
 	============================
@@ -245,35 +248,61 @@ setPassenger(struct Passenger *passenger, int priority, String20 firstName, Stri
    @param lastName     - last name of the passenger
    @param id           - id number of the passenger
    @param dropOffPoint - drop off point of the passenger, represented through an int
-   @param seatNumber   - seat number to board the passenger onto. (-1) indicates automatic passenger assignment.
+   @param seatNumber   - seat number (index) to board the passenger onto. (-1) indicates automatic seat assignment.
    @param bus          - pointer to the bus the passenger will be boarded onto
    @return void
 */ 
 void 
 inputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus)
 {
-    if (bus->tripNumber == -1)
+	if (bus->tripNumber == -1)
     {
         printf("There are no more remaining bus trips!\n");
-        return;
     }
+
+	// Check first if valid dropOff
+	int validDropOff = 0;
+	int lastValidRoutePoint = 0;
+	int k;
+	for (k=0; k<MAX_ROUTE_LENGTH; k++)
+	{
+		printf("%d   |   %d\n", dropOffPoint, bus->route[k]);
+		if (dropOffPoint == bus->route[k])
+		{
+			validDropOff = 1;
+			k=MAX_ROUTE_LENGTH;
+		}
+		if (bus->route[k] != 0)
+			lastValidRoutePoint = bus->route[k];
+
+	}
+	if (!validDropOff) // Default drop off point
+	{
+		dropOffPoint = lastValidRoutePoint;
+		printf("Provided drop-off point for trip AE-%d is not part of the route! defaulting to final drop-off point at ", bus->tripNumber);
+		printDropOffPointFromCode(lastValidRoutePoint);
+		printf("\n");
+	}
 
     if (isTripFull(*bus))
     {
-        // Check for the lowest passenger
-        struct Passenger *firstLowestPassenger = NULL;
+        // Check for the lowest priority passenger
+        struct Passenger *lastLowestPriorityPassenger = NULL;
         int i;
-        for (i=0; i<16; i++)
+		int seat = 0;
+        for (i=MAX_PASSENGERS-1; i>=0; i--)
         {
             if (priority > bus->passengers[i].priority && bus->passengers[i].priority > 0)
             {
-                firstLowestPassenger = &(bus->passengers[i]);
+                lastLowestPriorityPassenger = &(bus->passengers[i]);
+				seat = i;
+				i = 0;
             }
 
         }
 
 
-		if (firstLowestPassenger == NULL) 
+		if (lastLowestPriorityPassenger == NULL) 
 		{
 			printf("Sorry, passenger %s %s this trip (AE%d) cannot accomodate you.\n", firstName, lastName, bus->tripNumber);
 		}
@@ -282,20 +311,30 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 			struct Passenger tempPassenger;
 			// Move the firstLowestPassenger to a temporary variable to be moved to the next bus.
 			setPassenger(&tempPassenger, 
-						firstLowestPassenger->priority, 
-						firstLowestPassenger->firstName,
-						firstLowestPassenger->lastName,
-						firstLowestPassenger->id,
-						firstLowestPassenger->dropOff);
-			// Move the current passenger into the seat of the firstLowestPassenger
-			setPassenger(firstLowestPassenger,
+						lastLowestPriorityPassenger->priority, 
+						lastLowestPriorityPassenger->firstName,
+						lastLowestPriorityPassenger->lastName,
+						lastLowestPriorityPassenger->id,
+						lastLowestPriorityPassenger->dropOff);
+
+			// Move the current passenger into the seat of the lastLowestPassenger
+
+			setPassenger(lastLowestPriorityPassenger,
 						priority,
 						firstName,
 						lastName,
 						id,
 						dropOffPoint);
 
-			printf("Passenger %s %s will be moved to the following trip to acommodate a higher priority passenger.\n", tempPassenger.firstName, tempPassenger.lastName);
+			printf("\nPassenger Input Sucessfully!\n");
+			printf("   Name        : %s, %s\n", lastName, firstName);
+			printf("   ID Number   : %d\n", id);
+			printf("   Priority    : %d\n", priority);
+			printf("   Seat Number : %d\n", seat);
+			printf("   Trip Number : AE-%d\n", bus->tripNumber);
+			
+			// Moving lowest priority passenger to next trip
+			printf("\nPassenger %s %s will be moved to the following trip to acommodate a higher priority passenger.\n", tempPassenger.firstName, tempPassenger.lastName);
 
 			inputPassenger(
 				tempPassenger.priority,
@@ -310,14 +349,15 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 		}
         
     }
+
     else
     {
-		if (seatNumber == -1) // indicates automatic assignment
+		if (seatNumber == -1) // Automatic seat assignment
 		{
 			int i;
 			for (i=0; i<16; i++)
 			{
-				if (bus->passengers[seatNumber-1].onboard == 0)
+				if (bus->passengers[i].onboard == 0)
 				{
 					setPassenger(&(bus->passengers[i]),
 					priority,
@@ -326,12 +366,18 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 					id,
 					dropOffPoint);
 
-					printf("Passenger Input Sucessfully! Seat Number %d\n", seatNumber);
+					printf("\nPassenger Input Sucessfully!\n");
+					printf("   Name        : %s, %s\n", lastName, firstName);
+					printf("   ID Number   : %d\n", id);
+					printf("   Priority    : %d\n", priority);
+					printf("   Seat Number : %d\n", i);
+					printf("   Trip Number : AE-%d\n", bus->tripNumber);
+
 					i=16;
 				}
 			}
 		}
-		else if (bus->passengers[seatNumber-1].onboard) // Needs to be changed for the bonus implementation
+		else if (bus->passengers[seatNumber].onboard) // TODO: Needs to be changed for the bonus implementation
 		{
 			printf("There is already a passenger on seat\n");
 		}
@@ -344,7 +390,13 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 					lastName,
 					id,
 					dropOffPoint);
-			printf("Passenger Input Sucessfully!\n");
+			
+			printf("\nPassenger Input Sucessfully!\n");
+			printf("   Name        : %s, %s\n", lastName, firstName);
+			printf("   ID Number   : %d\n", id);
+			printf("   Priority    : %d\n", priority);
+			printf("   Seat Number : %d\n", seatNumber);
+			printf("   Trip Number : AE-%d\n", bus->tripNumber);
 		}
 		
     }
@@ -389,7 +441,7 @@ inputPassengerInformation(struct Bus *bus)
 
 	int validInput = 0;
 
-	printf("ID Number: ");
+	printf("ID Number:\n");
 	while(!validInput)
 	{
 		scanf(" %d", &id);
@@ -403,7 +455,7 @@ inputPassengerInformation(struct Bus *bus)
 	}
 
 	validInput = 0;
-	printf("First Name: (DO NOT INCLUDE ANY SPACES)");
+	printf("First Name (NOTE: DO NOT INCLUDE ANY SPACES):\n");
 	while(!validInput)
 	{
 		scanf(" %s", firstName); // TODO: Fix this and for last name too
@@ -418,7 +470,7 @@ inputPassengerInformation(struct Bus *bus)
 	validInput = 0;
 	while(!validInput)
 	{
-		printf("Last Name: (NOTE -- DO NOT INCLUDE ANY SPACES. USE UNDERSCORE OR HYPHEN)");
+		printf("Last Name: (NOTE: DO NOT INCLUDE ANY SPACES):\n");
 		scanf(" %s", lastName);
 
 		if (strcmp(firstName, "") == 0)
@@ -444,21 +496,37 @@ inputPassengerInformation(struct Bus *bus)
 	}
 	
 	
-	int dropOffOptions = displayDropOff(bus->tripNumber);
+	// int dropOffOptions = displayDropOff(bus->tripNumber); -- old 
+
+	int d;
+	int nDropOffOptions = 0;
+	
 
 	validInput = 0;
 	while(!validInput)
 	{
-		printf("Drop off Point: ");
+		printf("Drop off Point:\n");
+		for (d=1; d<MAX_ROUTE_LENGTH; d++)
+		{
+			if (bus->route[d] != 0)
+			{ 
+				printf("   %d (%d) - ", d, bus->route[d]);
+				printDropOffPointFromCode(bus->route[d]);
+				printf("\n");
+				nDropOffOptions++;
+			}
+		}
 		scanf(" %d", &dropOff);
 
-		if (!(dropOff >= 1 && dropOff <= dropOffOptions))
+		if (!(dropOff >= 1 && dropOff <= nDropOffOptions))
 		{
-			printf("\nInvalid Priority number! Please input a priority number from 1 to 6\n");
+			printf("\nInvalid input. Please input a number between 1 to %d\n", nDropOffOptions);
 		}
 		else
 			validInput = 1;
 	}
+
+	int dropOffId = bus->route[dropOff];
 	
 	// TODO: Logic may be added here for implementation of bonus feature in the future
 
@@ -466,8 +534,9 @@ inputPassengerInformation(struct Bus *bus)
 					firstName,
 					lastName,
 					id,
-					dropOff,
+					dropOffId,
 					-1, bus);
+	
 }
 
 /* encodePassengerInformation: Combines the functions inputTripNumber and inputPassengerInformation and creates the logic for 
@@ -585,7 +654,18 @@ displayPassengerCount(struct Bus bus)
 				printf("+-----+-----+\n");
 			}
 		}		
-
+	
+	// TODO: Remove this before submission
+	printf("FOR DEBUGGING PURPOSES!\n");
+	printf("Passenger List\n");
+	int x;
+	for (x=0; x<MAX_PASSENGERS; x++)
+	{
+		if (bus.passengers[x].onboard)
+		{
+			printf("%s, %s; ID: %d; Drop off %d; Priority: %d\n", bus.passengers[x].lastName, bus.passengers[x].firstName, bus.passengers[x].id, bus.passengers[x].dropOff, bus.passengers[x].priority);
+		}
+	}
 }
 
 /* viewPassengerCount: Asks the user for a trip number and views the passenger count for the corresponding trip number
@@ -626,108 +706,147 @@ viewDropOffCount(struct Bus trips[])
 {
 	clearScreen();
 
-	int nTripNumber;
+	int nTripNo;
 
 	int validInput = 0;
 	while (!validInput)
 	{
 		displayTripList(0);
 		printf("Which trip's drop-off information would you like to view?\n");
-		scanf("%d", &nTripNumber);
+		scanf("%d", &nTripNo);
 
-		if (!isValidTripNumber(nTripNumber) )
-			printf("\nInvalid trip number. Please enter a valid trip number!\n\n");
-		else
-			validInput = 1;
+		validInput = 1;
+
+		// if (!isValidTripNumber(nTripNumber) )
+		// 	printf("\nInvalid trip number. Please enter a valid trip number!\n\n");
+		// else
+		// 	validInput = 1;
 	}
 
-	struct Bus *bus = getBusFromTripNumber(trips, 22, nTripNumber);
+	struct Bus *bus = getBusFromTripNumber(trips, 22, nTripNo);
 
-	// Drop offs are counted for all possible drop offs regardless of the trip number
 
-	int dropOff10010 = 0;
-	int dropOff10020 = 0; 
-	int dropOff10030 = 0; 
-	int dropOff10040 = 0; 
+	int routeCounter[MAX_ROUTE_LENGTH] = {0,0,0,0,0};
 
-	int dropOff20010 = 0; 
-	int dropOff20020 = 0;
-	int dropOff20030 = 0;
-	int dropOff20040 = 0;
-	int dropOff20050 = 0;
+	printf("HERE!");
 
-	int i;
-
-	for (i=0; i<16; i++)
+	int i, j;
+	for (i=1; i<MAX_ROUTE_LENGTH; i++)
 	{
-		if (bus->passengers[i].dropOff == 10010)
-			dropOff10010++;
-		if (bus->passengers[i].dropOff == 10020)
-			dropOff10020++;
-		if (bus->passengers[i].dropOff == 10030)
-			dropOff10030++;
-		if (bus->passengers[i].dropOff == 10040)
-			dropOff10040++;
+		for (j=0; i<MAX_PASSENGERS; j++)
+		{
+			if (bus->route[i] == bus->passengers[j].dropOff && bus->route[i] != 0)
+			{
+				routeCounter[i]++;
+			}
+		}
+	}
 
-		if (bus->passengers[i].dropOff == 20010)
-			dropOff20010++;
-		if (bus->passengers[i].dropOff == 20020)
-			dropOff20020++;
-		if (bus->passengers[i].dropOff == 20030)
-			dropOff20030++;
-		if (bus->passengers[i].dropOff == 20040)
-			dropOff20040++;
-		if (bus->passengers[i].dropOff == 20050)
-			dropOff20050++;
+
+	printf("=======================================================\n");
+	printf("Drop-off count for Trip Number AE-%d\n", nTripNo);
+	
+	for (i=1; i<MAX_ROUTE_LENGTH; i++)
+	{
+		if (bus->route[i])
+		{
+			printf("%d - ", routeCounter[i]);
+			printDropOffPointFromCode(bus->route[i]);
+			printf("\n");
+		}	
 		
 	}
 
 	printf("=======================================================\n");
-	printf("Drop-off count for Trip Number AE-%d\n", nTripNumber);
 
-	// Conditionals for the trip number are only considered here to decrease code redundancy
-	if (nTripNumber == 101 || nTripNumber == 103 || nTripNumber == 105 || nTripNumber == 109)
-	{
-		printDropOffPointFromCode(10010);
-		printf("- %d\n", dropOff10010);
-		printDropOffPointFromCode(10020);
-		printf("- %d\n", dropOff10020);
-		printDropOffPointFromCode(10030);
-		printf("- %d\n", dropOff10030);
-	}
 
-	else if (nTripNumber == 102 || nTripNumber == 104 || nTripNumber == 106 || nTripNumber == 108 || nTripNumber == 110)
-	{
-		printf("%d - ", dropOff10040);
-		printDropOffPointFromCode(10040);
-		printf("\n%d - ", dropOff10030);
-		printDropOffPointFromCode(1030);
-	}
 
-	else if (nTripNumber == 151 || nTripNumber == 153 || nTripNumber == 155 || nTripNumber == 157 || nTripNumber == 159 || nTripNumber == 161)
-	{
-		printf("%d - ", dropOff20010);
-		printDropOffPointFromCode(20010);
-		printf("\n%d - ", dropOff20010);
-		printDropOffPointFromCode(20030);
-		printf("\n%d - ", dropOff20010);
-		printDropOffPointFromCode(20040);
-		printf("\n%d - ", dropOff20010);
-		printDropOffPointFromCode(20050);
-	}
+	// Drop offs are counted for all possible drop offs regardless of the trip number
 
-	else if (nTripNumber == 150 || nTripNumber == 152 || nTripNumber == 154 || nTripNumber == 156 || nTripNumber == 158 || nTripNumber == 160)
-	{
-		printf("%d - ", dropOff20020);
-		printDropOffPointFromCode(20020);
-		printf("\n%d - ", dropOff20010);
-		printDropOffPointFromCode(20030);
-		printf("\n%d - ", dropOff20010);
-		printDropOffPointFromCode(20040);
-		printf("\n%d - ", dropOff20010);
-		printDropOffPointFromCode(20050);
-	}
-	printf("=======================================================\n");
+	// int dropOff10010 = 0;
+	// int dropOff10020 = 0; 
+	// int dropOff10030 = 0; 
+	// int dropOff10040 = 0; 
+
+	// int dropOff20010 = 0; 
+	// int dropOff20020 = 0;
+	// int dropOff20030 = 0;
+	// int dropOff20040 = 0;
+	// int dropOff20050 = 0;
+
+
+	// int i;
+
+	// for (i=0; i<16; i++)
+	// {
+	// 	if (bus->passengers[i].dropOff == 10010)
+	// 		dropOff10010++;
+	// 	if (bus->passengers[i].dropOff == 10020)
+	// 		dropOff10020++;
+	// 	if (bus->passengers[i].dropOff == 10030)
+	// 		dropOff10030++;
+	// 	if (bus->passengers[i].dropOff == 10040)
+	// 		dropOff10040++;
+
+	// 	if (bus->passengers[i].dropOff == 20010)
+	// 		dropOff20010++;
+	// 	if (bus->passengers[i].dropOff == 20020)
+	// 		dropOff20020++;
+	// 	if (bus->passengers[i].dropOff == 20030)
+	// 		dropOff20030++;
+	// 	if (bus->passengers[i].dropOff == 20040)
+	// 		dropOff20040++;
+	// 	if (bus->passengers[i].dropOff == 20050)
+	// 		dropOff20050++;
+		
+	// }
+
+	// printf("=======================================================\n");
+	// printf("Drop-off count for Trip Number AE-%d\n", nTripNumber);
+
+	// // Conditionals for the trip number are only considered here to decrease code redundancy
+	// if (nTripNumber == 101 || nTripNumber == 103 || nTripNumber == 105 || nTripNumber == 109)
+	// {
+	// 	printDropOffPointFromCode(10010);
+	// 	printf("- %d\n", dropOff10010);
+	// 	printDropOffPointFromCode(10020);
+	// 	printf("- %d\n", dropOff10020);
+	// 	printDropOffPointFromCode(10030);
+	// 	printf("- %d\n", dropOff10030);
+	// }
+
+	// else if (nTripNumber == 102 || nTripNumber == 104 || nTripNumber == 106 || nTripNumber == 108 || nTripNumber == 110)
+	// {
+	// 	printf("%d - ", dropOff10040);
+	// 	printDropOffPointFromCode(10040);
+	// 	printf("\n%d - ", dropOff10030);
+	// 	printDropOffPointFromCode(1030);
+	// }
+
+	// else if (nTripNumber == 151 || nTripNumber == 153 || nTripNumber == 155 || nTripNumber == 157 || nTripNumber == 159 || nTripNumber == 161)
+	// {
+	// 	printf("%d - ", dropOff20010);
+	// 	printDropOffPointFromCode(20010);
+	// 	printf("\n%d - ", dropOff20010);
+	// 	printDropOffPointFromCode(20030);
+	// 	printf("\n%d - ", dropOff20010);
+	// 	printDropOffPointFromCode(20040);
+	// 	printf("\n%d - ", dropOff20010);
+	// 	printDropOffPointFromCode(20050);
+	// }
+
+	// else if (nTripNumber == 150 || nTripNumber == 152 || nTripNumber == 154 || nTripNumber == 156 || nTripNumber == 158 || nTripNumber == 160)
+	// {
+	// 	printf("%d - ", dropOff20020);
+	// 	printDropOffPointFromCode(20020);
+	// 	printf("\n%d - ", dropOff20010);
+	// 	printDropOffPointFromCode(20030);
+	// 	printf("\n%d - ", dropOff20010);
+	// 	printDropOffPointFromCode(20040);
+	// 	printf("\n%d - ", dropOff20010);
+	// 	printDropOffPointFromCode(20050);
+	// }
+	// printf("=======================================================\n");
 
 
 	pauseAndContinueOnReturn();
@@ -748,7 +867,8 @@ viewPassengerInformation(struct Bus trips[])
 	{
 		displayTripList(0);
 		printf("Which trip's passenger information would you like to view?\n");
-		scanf("%d", &nTripNumber);
+		int *pInt = &nTripNumber;
+		scanf("%d", pInt);
 
 		if (!isValidTripNumber(nTripNumber))
 			printf("\nInvalid trip number. Please enter a valid trip number!\n\n");

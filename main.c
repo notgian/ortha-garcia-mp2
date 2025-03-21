@@ -14,6 +14,17 @@ int main()
 
     initializeBuses(trips);
 
+    // TODO: Remove since this was only for debugging
+    int i,j;
+    for (i=0; i<MAX_TRIPS; i++)
+    {
+        printf("\n\nAE-%d\n", trips[i].tripNumber);
+        for (j=0; j<MAX_ROUTE_LENGTH; j++)
+        {
+            printf("%d\n", trips[i].route[j]);
+        }
+    }
+
     inputPassenger(1, john, doe, 12313412, 10010, 1, &trips[0]);
     inputPassenger(1, john, doe, 12313412, 10010, 2, &trips[0]);
     inputPassenger(1, john, doe, 12313412, 10010, 3, &trips[0]);
@@ -41,8 +52,6 @@ int main()
 
 		if (parentMenu == 100) // Selected menu is main menu
 			screenState = mainMenu();
-		
-
 		
 		else if (parentMenu == 200) // Selected menu is passenger
 		{
