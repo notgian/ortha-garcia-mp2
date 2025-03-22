@@ -25,22 +25,22 @@ int main()
         }
     }
 
-    inputPassenger(1, john, doe, 12313412, 10010, 1, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 2, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 3, &trips[0]);
-    inputPassenger(2, john, doe, 12313412, 10010, 4, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10030, 5, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10030, 6, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 7, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 8, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 9, &trips[0]);
-    inputPassenger(2, john, doe, 12313412, 10020, 10, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 11, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 12, &trips[0]);
-    inputPassenger(2, john, doe, 12313412, 10010, 13, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 14, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 15, &trips[0]);
-    inputPassenger(1, johnass, john, 12313412, 10010, 16, &trips[0]);
+    inputPassenger(1, john, doe, 12313412, 10010, 1, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 2, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 3, &trips[0], 0);
+    inputPassenger(2, john, doe, 12313412, 10010, 4, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10030, 5, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10030, 6, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 7, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 8, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 9, &trips[0], 0);
+    inputPassenger(2, john, doe, 12313412, 10020, 10, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 11, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 12, &trips[0], 0);
+    inputPassenger(2, john, doe, 12313412, 10010, 13, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 14, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 15, &trips[0], 0);
+    inputPassenger(1, johnass, john, 12313412, 10010, 16, &trips[0], 0);
 
 
 	int screenState = 100;
