@@ -28,6 +28,7 @@ struct Bus {
     struct Passenger passengers[16]; //To be determined how this will work, since there is a system that only allows one special shuttle;
     struct Bus *next; // Functions like a singly linked list. the end of the node is determined with a -1 for the trip number
     int route[MAX_ROUTE_LENGTH]; // = [embarkation point, drop off 1, drop off 2, drop off 3]
+    int nReserveCount;
 };
 
 struct Passenger createEmptyPassenger();

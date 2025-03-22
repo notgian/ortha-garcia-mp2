@@ -63,6 +63,7 @@ initializeBuses(struct Bus trips[22])
         busInst.specialBus = 0;
         busInst.next = NULL;
         busInst.tripNumber = -1;
+        busInst.nReserveCount = 0;
         setEmptyPassengers(busInst.passengers, MAX_PASSENGERS);
 
         int i;
@@ -109,10 +110,10 @@ initializeBuses(struct Bus trips[22])
         if (i % 2 == 0) // Even numbered buses
         {
             trips[i+10].route[0] = 10040; // Embarkation Point
-            trips[i+10].route[1] = 10010; 
-            trips[i+10].route[2] = 10030;
-            trips[i+10].route[3] = 10040;
-            trips[i+10].route[4] = 10050;
+            trips[i+10].route[1] = 20010; 
+            trips[i+10].route[2] = 20030;
+            trips[i+10].route[3] = 20040;
+            trips[i+10].route[4] = 20050;
         }
         else  // Odd numbered buses
         {
