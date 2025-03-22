@@ -165,7 +165,7 @@ void clearScreen()
 
 void pauseAndContinueOnReturn()
 {
-	printf("\nTyoe any character and press return to continue\n");
+	printf("\nType any character and press return to continue\n");
 	scanf(" \n");
 	getchar();
 }
@@ -232,7 +232,7 @@ dropOffInRoute(int dropOff, int route)
    @return void
 */ 
 void
-setPassenger(struct Passenger *passenger, int priority, String20 firstName, String20 lastName, int id, int dropOffPoint)
+setPassenger(struct Passenger *passenger, int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int nReserve)
 {
 	passenger->priority = priority;
 	strcpy(passenger->firstName, firstName);
@@ -240,6 +240,7 @@ setPassenger(struct Passenger *passenger, int priority, String20 firstName, Stri
 	passenger->id = id;
 	passenger->dropOff = dropOffPoint;
 	passenger->onboard = 1;
+	passenger->reserved = nReserve;
 }
 
 /* inputPassenger: takes a passenger's properties and attempts to put them into a bus.
@@ -253,8 +254,9 @@ setPassenger(struct Passenger *passenger, int priority, String20 firstName, Stri
    @return void
 */ 
 void 
-inputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus)
+inputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus, int nReserve)
 {
+	int nWillReserve = 0;
 	if (bus->tripNumber == -1)
     {
         printf("There are no more remaining bus trips!\n");
@@ -266,7 +268,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 	int k;
 	for (k=0; k<MAX_ROUTE_LENGTH; k++)
 	{
-		printf("%d   |   %d\n", dropOffPoint, bus->route[k]);
+//		printf("%d   |   %d\n", dropOffPoint, bus->route[k]);
 		if (dropOffPoint == bus->route[k])
 		{
 			validDropOff = 1;
@@ -315,7 +317,8 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 						lastLowestPriorityPassenger->firstName,
 						lastLowestPriorityPassenger->lastName,
 						lastLowestPriorityPassenger->id,
-						lastLowestPriorityPassenger->dropOff);
+						lastLowestPriorityPassenger->dropOff,
+						lastLowestPriorityPassenger->reserved);
 
 			// Move the current passenger into the seat of the lastLowestPassenger
 
@@ -324,7 +327,8 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 						firstName,
 						lastName,
 						id,
-						dropOffPoint);
+						dropOffPoint,
+						nReserve);
 
 			printf("\nPassenger Input Sucessfully!\n");
 			printf("   Name        : %s, %s\n", lastName, firstName);
@@ -343,8 +347,8 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 				tempPassenger.id,
 				tempPassenger.dropOff,
 				-1,
-				bus->next
-			);
+				bus->next,
+				tempPassenger.reserved);
 			
 		}
         
@@ -352,7 +356,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 
     else
     {
-		if (seatNumber == -1) // Automatic seat assignment
+		if (seatNumber == -1 && nReserve != 1) // Automatic seat assignment
 		{
 			int i;
 			for (i=0; i<16; i++)
@@ -364,7 +368,8 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 					firstName,
 					lastName,
 					id,
-					dropOffPoint);
+					dropOffPoint,
+					nReserve);
 
 					printf("\nPassenger Input Sucessfully!\n");
 					printf("   Name        : %s, %s\n", lastName, firstName);
@@ -377,19 +382,36 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 				}
 			}
 		}
-		else if (bus->passengers[seatNumber].onboard) // TODO: Needs to be changed for the bonus implementation
-		{
-			printf("There is already a passenger on seat\n");
-		}
-		else
-		{
+//		else if () // TODO: Needs to be changed for the bonus implementation
 
+		else if(seatNumber == -1 && nReserve == 1 && bus->nReserveCount < 5)
+		{
+			printf("What seat do you want to occupy?\n");
+			scanf("%d", &seatNumber);
 			setPassenger(&(bus->passengers[seatNumber-1]),
 					priority,
 					firstName,
 					lastName,
 					id,
-					dropOffPoint);
+					dropOffPoint,
+					nReserve);
+			
+			printf("\nPassenger Input Sucessfully!\n");
+			printf("   Name        : %s, %s\n", lastName, firstName);
+			printf("   ID Number   : %d\n", id);
+			printf("   Priority    : %d\n", priority);
+			printf("   Seat Number : %d\n", seatNumber);
+			printf("   Trip Number : AE-%d\n", bus->tripNumber);
+		}
+		else 
+		{
+			setPassenger(&(bus->passengers[seatNumber-1]),
+					priority,
+					firstName,
+					lastName,
+					id,
+					dropOffPoint,
+					nReserve);
 			
 			printf("\nPassenger Input Sucessfully!\n");
 			printf("   Name        : %s, %s\n", lastName, firstName);
@@ -400,6 +422,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 		}
 		
     }
+    
 
 }
 
@@ -436,7 +459,7 @@ void
 inputPassengerInformation(struct Bus *bus) 
 {
 	printf("==========Enter Details Below==========\n");
-	int priority, id, dropOff;
+	int priority, id, dropOff, nReserve;
 	String20 firstName, lastName;
 
 	int validInput = 0;
@@ -448,7 +471,7 @@ inputPassengerInformation(struct Bus *bus)
 		if (!(id >= 10000000 && id <= 99999999))
 				    
 		{
-			printf("\nInvalid ID number! Please input a valid 7-digit id number\n");
+			printf("\nInvalid ID number! Please input a valid 8-digit id number\n");
 		}
 		else
 			validInput = 1;
@@ -495,7 +518,23 @@ inputPassengerInformation(struct Bus *bus)
 			validInput = 1;
 	}
 	
-	
+	validInput = 0;
+	while(!validInput && bus->nReserveCount < 4)
+	{
+		printf("Do you want to reserve?\n");
+		printf("1 - Yes\n");
+		printf("0 - No\n");
+		scanf("%d", &nReserve);
+		if(nReserve < 0 && nReserve > 1)
+		{
+			printf("\nInvalid input! Please input a priority number from 1 for yes or 0 for no.\n");
+		}
+		else
+		{
+			validInput = 1;
+			bus->nReserveCount += 1;
+		}
+	}
 	// int dropOffOptions = displayDropOff(bus->tripNumber); -- old 
 
 	int d;
@@ -535,7 +574,7 @@ inputPassengerInformation(struct Bus *bus)
 					lastName,
 					id,
 					dropOffId,
-					-1, bus);
+					-1, bus, nReserve);
 	
 }
 
