@@ -14,25 +14,61 @@ int main()
 
     initializeBuses(trips);
 
-    inputPassenger(1, john, doe, 12313412, 10010, 1, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 2, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 3, &trips[0]);
-    inputPassenger(2, john, doe, 12313412, 10010, 4, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10030, 5, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10030, 6, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 7, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 8, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 9, &trips[0]);
-    inputPassenger(2, john, doe, 12313412, 10020, 10, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10020, 11, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 12, &trips[0]);
-    inputPassenger(2, john, doe, 12313412, 10010, 13, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 14, &trips[0]);
-    inputPassenger(1, john, doe, 12313412, 10010, 15, &trips[0]);
-    inputPassenger(1, johnass, john, 12313412, 10010, 16, &trips[0]);
+    // TODO: Remove since this was only for debugging
+    int i;
+    // for (i=0; i<MAX_TRIPS; i++)
+    // {
+    //     printf("\n\nAE-%d\n", trips[i].tripNumber);
+    //     for (j=0; j<MAX_ROUTE_LENGTH; j++)
+    //     {
+    //         printf("%d\n", trips[i].route[j]);
+    //     }
+    // }
 
+    for (i=0; i<MAX_TRIPS; i++)
+    {
+        printf("Trip Number: %d\n", trips[i].tripNumber);
+
+        if (trips[i].next != NULL)
+            printf("   Next: %d\n", trips[i].next->tripNumber);
+    }
+
+    
+
+    inputPassenger(1, john, doe, 12313412, 10010, 1, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 2, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 3, &trips[0], 0);
+    inputPassenger(2, john, doe, 12313412, 10010, 4, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10030, 5, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10030, 6, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 7, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 8, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 9, &trips[0], 0);
+    inputPassenger(2, john, doe, 12313412, 10020, 10, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10020, 11, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 12, &trips[0], 0);
+    inputPassenger(2, john, doe, 12313412, 10010, 13, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 14, &trips[0], 0);
+    inputPassenger(1, john, doe, 12313412, 10010, 15, &trips[0], 0);
+    inputPassenger(1, johnass, john, 12313412, 10010, 16, &trips[0], 0);
+
+    int j;
+    for (i=1; i<MAX_TRIPS_MANILA-2; i++)
+    {
+        for (j=0; j<MAX_PASSENGERS; j++)
+        {
+            inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[i], 0);
+        }
+    }
+
+    for (j=1; j<MAX_PASSENGERS; j++)
+    {
+        inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS_MANILA-2], 0);
+    }
 
 	int screenState = 100;
+    int nFullA = 0;
+    int nFullB = 0;
 
 	while (screenState > 0)
 	{
@@ -42,15 +78,13 @@ int main()
 		if (parentMenu == 100) // Selected menu is main menu
 			screenState = mainMenu();
 		
-
-		
 		else if (parentMenu == 200) // Selected menu is passenger
 		{
-			screenState = passengerMenu(trips);
+			screenState = passengerMenu(trips, &nFullA, &nFullB);
 		}
 		else if (parentMenu == 300) // Selected Menu is arrow personnel
 		{
-			screenState = arrowsPersonnelMenu(trips);
+			screenState = arrowsPersonnelMenu(trips, &nFullA, &nFullB);
 		}
 	}
 

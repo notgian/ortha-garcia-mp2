@@ -14,6 +14,7 @@ createEmptyPassenger()
     emptyPassenger.priority = 0;
     emptyPassenger.id = 0;
     emptyPassenger.dropOff = 0;
+    emptyPassenger.reserved = 0;
 
     return emptyPassenger;
 }
@@ -53,61 +54,92 @@ setEmptyPassenger(struct Passenger *passengerList, int n)
 void 
 initializeBuses(struct Bus trips[22])
 {
-    struct Bus busInst; // Instantiation of a bus for defining all buses
-    // First 10 buses are for manila to laguna, last 12 are for laguna to manila
-
-    // Initialization of all buses for the Manila to Laguna Trip
     int i;
-    for (i=0; i<22; i++)
+    for (i=0; i<MAX_TRIPS; i++)
     {
+        struct Bus busInst;
+        busInst.next = NULL;
         trips[i] = busInst;
     }
 
+    for (i=0; i<MAX_TRIPS; i++)
+    {   
+        trips[i].ETD = 0;
+        trips[i].dispatchable = 1;
+
+        trips[i].tripNumber = -1;
+        trips[i].nReserveCount = 0;
+        setEmptyPassengers(trips[i].passengers, MAX_PASSENGERS);
+
+        int i;
+        for (i = 0; i < MAX_ROUTE_LENGTH; i++)
+        {
+            trips[i].route[i] = 0;
+        }   
+        
+    }
 
     int initialTripNo_A = 101;
     int initialTripNo_B = 150;
 
-    // Setting essential properties for the Manila to Laguna trip
+    // Setting trip numbers and routes for the Manila to Laguna trip
     for (i=0; i<10; i++)
     {
-        setEmptyPassengers(trips[i].passengers, 16);
         trips[i].tripNumber = initialTripNo_A + i;
+        if (initialTripNo_A + i == 110)  
+            trips[i].dispatchable = 0;
+        
+        if (i % 2 == 0) // Odd numbered buses
+        {
+            trips[i].route[0] = 20050;
+            trips[i].route[1] = 10010; 
+            trips[i].route[2] = 10020;
+            trips[i].route[3] = 10040;
+        }
+        else // Even numbered buses
+        {
+            trips[i].route[0] = 20050;
+            trips[i].route[1] = 10030; 
+            trips[i].route[2] = 10040;
+        }
+
+        trips[i].next = NULL;
     }
 
-    // Setting essential properties for the Laguna to Manila trip
+    // Setting trip numbers for the Laguna to Manila trip
     for (i=0; i<12; i++)
     {
-        setEmptyPassengers(trips[i+10].passengers, 16);
         trips[i+10].tripNumber = initialTripNo_B + i;
+        if (initialTripNo_B + i == 161)
+            trips[i+10].dispatchable = 0;
+
+        if (i % 2 == 0) // Even numbered buses
+        {
+            trips[i+10].route[0] = 10040; 
+            trips[i+10].route[1] = 20010; 
+            trips[i+10].route[2] = 20030;
+            trips[i+10].route[3] = 20040;
+            trips[i+10].route[4] = 20050;
+        }
+        else  // Odd numbered buses
+        {
+            trips[i+10].route[0] = 10040;
+            trips[i+10].route[1] = 20020; 
+            trips[i+10].route[2] = 20030;
+            trips[i+10].route[3] = 20040;
+            trips[i+10].route[4] = 20050;
+        }
+
+        trips[i+10].next = NULL;
     }
 
-    // Setup linking of buses for Manila to Laguna Trip
-    for (i=9; i>=0; i--)
+    for (i=MAX_TRIPS_MANILA-3; i>=0; i--)
     {
-        if (i > 7) // for 109 and 110 (special trip)
-        {
-            struct Bus newBusInst = busInst;
-            busInst.tripNumber = -1;
-            trips[i].next = &newBusInst;
-        }
-        else
-        {
-            trips[i].next = &trips[i+2];
-        }
+        trips[i].next = &trips[i+1];
     }
 
-    // Setup linking of buses for Manila to Laguna Trip
-    for (i=11; i>=0; i--)
+    for (i=MAX_TRIPS_LAGUNA-3; i>=0; i--)
     {
-        if (i > 9) // for 160 and 161 (for special trip)
-        {
-            struct Bus newBusInst = busInst;
-            busInst.tripNumber = -1;
-            trips[i+10].next = &newBusInst;
-        }
-        else
-        {
-            trips[i+10].next = &trips[i+2+10];
-        }
-    } 
+        trips[i+10].next = &trips[i+11];
+    }
 }
