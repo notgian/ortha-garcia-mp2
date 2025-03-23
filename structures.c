@@ -58,21 +58,25 @@ initializeBuses(struct Bus trips[22])
     for (i=0; i<MAX_TRIPS; i++)
     {
         struct Bus busInst;
-        
-        busInst.ETD = 0;
-        busInst.specialBus = 0;
+        busInst.next = NULL;
+        trips[i] = busInst;
+    }
 
-        busInst.tripNumber = -1;
-        busInst.nReserveCount = 0;
-        setEmptyPassengers(busInst.passengers, MAX_PASSENGERS);
+    for (i=0; i<MAX_TRIPS; i++)
+    {   
+        trips[i].ETD = 0;
+        trips[i].dispatchable = 1;
+
+        trips[i].tripNumber = -1;
+        trips[i].nReserveCount = 0;
+        setEmptyPassengers(trips[i].passengers, MAX_PASSENGERS);
 
         int i;
         for (i = 0; i < MAX_ROUTE_LENGTH; i++)
         {
-            busInst.route[i] = 0;
+            trips[i].route[i] = 0;
         }   
-
-        trips[i] = busInst;
+        
     }
 
     int initialTripNo_A = 101;
@@ -83,7 +87,7 @@ initializeBuses(struct Bus trips[22])
     {
         trips[i].tripNumber = initialTripNo_A + i;
         if (initialTripNo_A + i == 110)  
-            trips[i].specialBus = 1;
+            trips[i].dispatchable = 0;
         
         if (i % 2 == 0) // Odd numbered buses
         {
@@ -107,7 +111,7 @@ initializeBuses(struct Bus trips[22])
     {
         trips[i+10].tripNumber = initialTripNo_B + i;
         if (initialTripNo_B + i == 161)
-            trips[i+10].specialBus = 1;
+            trips[i+10].dispatchable = 0;
 
         if (i % 2 == 0) // Even numbered buses
         {

@@ -113,22 +113,39 @@ displayTripList(struct Bus trips[])
 			
 	}
 	printf("|===========================================|\n");
+}
 
-	//   printf("|====MANILA-LAGUNA====|====LAGUNA-MANILA====|\n");
-	//   printf("|        AE-101       |        AE-150       |\n");
-	//   printf("|        AE-102       |        AE-151       |\n");
-	//   printf("|        AE-103       |        AE-152       |\n");
-	//   printf("|        AE-104       |        AE-153       |\n");
-	//   printf("|        AE-105       |        AE-154       |\n");
-	//   printf("|        AE-106       |        AE-155       |\n");
-	//   printf("|        AE-107       |        AE-156       |\n");
-	//   printf("|        AE-108       |        AE-157       |\n");
-	//   printf("|        AE-109       |        AE-158       |\n");
-	//   printf("|                     |        AE-159       |\n");
-	//   printf("|                     |        AE-160       |\n");
+struct Bus 
+*getInputTripNumber(struct Bus trips[])
+{
+	int nTripNumber;
+	struct Bus *bus;
 
-	// printf("|===========================================|\n");
+	int validInput = 0;
+	while (!validInput)
+	{
+		displayTripList(trips);
+		printf("Please input a trip number from the list above.\n");
+		
+		scanf("%d", &nTripNumber);
 
+		if (!isValidTripNumber(nTripNumber))
+			printf("\nInvalid trip number. Please enter a valid trip number.\n\n");
+		else
+		{
+			bus = getBusFromTripNumber(trips, 22, nTripNumber);
+			if (bus->dispatchable == 0)
+			{
+				printf("Bus selected is not currently dispatchable. Please enter a trip number listed.\n\n");	
+			}
+			else
+				validInput = 1;
+		}
+		
+		
+	}
+
+	return bus;
 }
 
 /* displayDropOff: displays the list of drop off points
@@ -399,7 +416,6 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 				}
 			}
 		}
-//		else if () // TODO: Needs to be changed for the bonus implementation
 
 		else if(seatNumber == -1 && nReserve == 1 && bus->nReserveCount < 5)
 		{
@@ -454,20 +470,16 @@ inputTripNumber(struct Bus trips[])
 	printf("What trip will you be boarding? (Please input the 3-digit number of the trip excluding the \"AE\")\n\n");
 	
 	// TODO: Implement the nFull function
-	displayTripList(trips);
-	
-	printf("Enter Trip Number:");
-	scanf("%d", &trip);
+	trip = getInputTripNumber(trips)->tripNumber;
 
-	if ( (trip >=101 && trip <= 109) || (trip >= 150 && trip <= 160) ) // IMPORTANT! Does not include logic for the special trips.
-		return trip;
-	else
-	{
-		printf("Please return a valid trip number and try again.\n");
-		return inputTripNumber(trips);
-	}
+	return trip;
 }
 
+
+/* searchPassengerId: Takes the list of trips and searches for a specified id among the passengers in all trips
+   @param trips - list of all the bus trips
+   @return int  - returns 1 if a passenger with the specified id is found, 0 otherwise 
+*/
 int
 searchPassengerId(struct Bus trips[], int searchId)
 {
@@ -489,14 +501,18 @@ searchPassengerId(struct Bus trips[], int searchId)
 	return found;	
 }
 
-/* inputPassengerInformation: Takes input from the user for encoding the passenger information. 
-   @param bus - pointer to the bus the passenger will be encoded to
+/* encodePassengerInformation: Combines the functions inputTripNumber and inputPassengerInformation and creates the logic for 
+   @param trips - array of all the busses
    @return void
 */
 void 
-inputPassengerInformation(int tripNo, struct Bus trips[]) 
+encodePassengerInformation(struct Bus trips[])
 {
-	int result = 0;
+	clearScreen();
+	int tripNo = inputTripNumber(trips);
+
+	clearScreen();
+
 	struct Bus *bus = getBusFromTripNumber(trips, MAX_TRIPS, tripNo);
 	
 	printf("==========Enter Details Below==========\n");
@@ -611,7 +627,6 @@ inputPassengerInformation(int tripNo, struct Bus trips[])
 
 	int dropOffId = bus->route[dropOff];
 	
-	// TODO: Logic may be added here for implementation of bonus feature in the future
 
 	inputPassenger(priority,
 					firstName,
@@ -619,23 +634,44 @@ inputPassengerInformation(int tripNo, struct Bus trips[])
 					id,
 					dropOffId,
 					-1, bus, nReserve);
-	
-}
-
-/* encodePassengerInformation: Combines the functions inputTripNumber and inputPassengerInformation and creates the logic for 
-   @param trips - array of all the busses
-   @return void
-*/
-void 
-encodePassengerInformation(struct Bus trips[])
-{
-	clearScreen();
-	int tripNo = inputTripNumber(trips);
-
-	clearScreen();
-	inputPassengerInformation(tripNo, trips);
 
 	pauseAndContinueOnReturn();
+}
+
+/* getBusFull: sets two integers to the fullness of their corresponding trips
+   @param trips - list of bus trips
+   @return void
+*/ 
+void getBusFull(struct Bus trips[], int *nFullA, int *nFullB)
+{
+	int i;
+	int counterA = 0;
+	int counterB = 0;
+
+	for (i=0; i<MAX_TRIPS; i++)
+	{
+		if (getPassengerCount(trips[i]) >= MAX_PASSENGERS)
+		{
+			if (i < MAX_TRIPS_MANILA)
+				counterA++;
+			else
+				counterB++;
+		}
+	}
+
+	if (counterA >= MAX_TRIPS_MANILA-1 && !*nFullA)
+	{
+		*nFullA = 1;
+		trips[MAX_TRIPS_MANILA-1].dispatchable = 1;
+		trips[MAX_TRIPS_MANILA-2].next = &trips[MAX_TRIPS_MANILA-1];
+	}
+
+	if (counterB >= MAX_TRIPS_LAGUNA-1 && !*nFullB)
+	{
+		*nFullB = 1;
+		trips[MAX_TRIPS-1].dispatchable = 1;
+		trips[MAX_TRIPS-2].next = &trips[MAX_TRIPS-1];
+	}
 }
 
 /*
@@ -756,24 +792,8 @@ void
 viewPassengerCount(struct Bus trips[])
 {
 	clearScreen();
-
-	int nTripNumber;
-	int validInput = 0;
-	while (!validInput)
-	{
-		displayTripList(trips);
-		printf("Which trip would you like to view?\n");
-		scanf("%d", &nTripNumber);
-
-		if (!isValidTripNumber(nTripNumber))
-			printf("\nInvalid trip number. Please enter a valid trip number!\n\n");
-		else
-			validInput = 1;
-	}
-
-	struct Bus *bus = getBusFromTripNumber(trips, 22, nTripNumber);
+	struct Bus *bus = getInputTripNumber(trips);
 	displayPassengerCount(*bus);
-
 	pauseAndContinueOnReturn();
 }
 
@@ -786,22 +806,10 @@ viewDropOffCount(struct Bus trips[])
 {
 	clearScreen();
 
-	int nTripNo;
 
-	int validInput = 0;
-	while (!validInput)
-	{
-		displayTripList(trips);
-		printf("Which trip's drop-off information would you like to view?\n");
-		scanf(" %d", &nTripNo);
+	struct Bus *bus = getInputTripNumber(trips);
+	int nTripNo = bus->tripNumber;
 
-		if (!isValidTripNumber(nTripNo) )
-			printf("\nInvalid trip number. Please enter a valid trip number!\n\n");
-		else
-			validInput = 1;
-	}
-
-	struct Bus *bus = getBusFromTripNumber(trips, 22, 101);	
 
 	int routeCounter[MAX_ROUTE_LENGTH] = {0,0,0,0,0};
 
@@ -819,7 +827,7 @@ viewDropOffCount(struct Bus trips[])
 
 
 	printf("=======================================================\n");
-	printf("Drop-off count for Trip Number AE-%d\n", 101);
+	printf("Drop-off count for Trip Number AE-%d\n", nTripNo);
 	
 	for (i=1; i<MAX_ROUTE_LENGTH; i++)
 	{
@@ -834,96 +842,6 @@ viewDropOffCount(struct Bus trips[])
 
 	printf("=======================================================\n");
 
-
-
-	// Drop offs are counted for all possible drop offs regardless of the trip number
-
-	// int dropOff10010 = 0;
-	// int dropOff10020 = 0; 
-	// int dropOff10030 = 0; 
-	// int dropOff10040 = 0; 
-
-	// int dropOff20010 = 0; 
-	// int dropOff20020 = 0;
-	// int dropOff20030 = 0;
-	// int dropOff20040 = 0;
-	// int dropOff20050 = 0;
-
-
-	// int i;
-
-	// for (i=0; i<16; i++)
-	// {
-	// 	if (bus->passengers[i].dropOff == 10010)
-	// 		dropOff10010++;
-	// 	if (bus->passengers[i].dropOff == 10020)
-	// 		dropOff10020++;
-	// 	if (bus->passengers[i].dropOff == 10030)
-	// 		dropOff10030++;
-	// 	if (bus->passengers[i].dropOff == 10040)
-	// 		dropOff10040++;
-
-	// 	if (bus->passengers[i].dropOff == 20010)
-	// 		dropOff20010++;
-	// 	if (bus->passengers[i].dropOff == 20020)
-	// 		dropOff20020++;
-	// 	if (bus->passengers[i].dropOff == 20030)
-	// 		dropOff20030++;
-	// 	if (bus->passengers[i].dropOff == 20040)
-	// 		dropOff20040++;
-	// 	if (bus->passengers[i].dropOff == 20050)
-	// 		dropOff20050++;
-		
-	// }
-
-	// printf("=======================================================\n");
-	// printf("Drop-off count for Trip Number AE-%d\n", nTripNumber);
-
-	// // Conditionals for the trip number are only considered here to decrease code redundancy
-	// if (nTripNumber == 101 || nTripNumber == 103 || nTripNumber == 105 || nTripNumber == 109)
-	// {
-	// 	printDropOffPointFromCode(10010);
-	// 	printf("- %d\n", dropOff10010);
-	// 	printDropOffPointFromCode(10020);
-	// 	printf("- %d\n", dropOff10020);
-	// 	printDropOffPointFromCode(10030);
-	// 	printf("- %d\n", dropOff10030);
-	// }
-
-	// else if (nTripNumber == 102 || nTripNumber == 104 || nTripNumber == 106 || nTripNumber == 108 || nTripNumber == 110)
-	// {
-	// 	printf("%d - ", dropOff10040);
-	// 	printDropOffPointFromCode(10040);
-	// 	printf("\n%d - ", dropOff10030);
-	// 	printDropOffPointFromCode(1030);
-	// }
-
-	// else if (nTripNumber == 151 || nTripNumber == 153 || nTripNumber == 155 || nTripNumber == 157 || nTripNumber == 159 || nTripNumber == 161)
-	// {
-	// 	printf("%d - ", dropOff20010);
-	// 	printDropOffPointFromCode(20010);
-	// 	printf("\n%d - ", dropOff20010);
-	// 	printDropOffPointFromCode(20030);
-	// 	printf("\n%d - ", dropOff20010);
-	// 	printDropOffPointFromCode(20040);
-	// 	printf("\n%d - ", dropOff20010);
-	// 	printDropOffPointFromCode(20050);
-	// }
-
-	// else if (nTripNumber == 150 || nTripNumber == 152 || nTripNumber == 154 || nTripNumber == 156 || nTripNumber == 158 || nTripNumber == 160)
-	// {
-	// 	printf("%d - ", dropOff20020);
-	// 	printDropOffPointFromCode(20020);
-	// 	printf("\n%d - ", dropOff20010);
-	// 	printDropOffPointFromCode(20030);
-	// 	printf("\n%d - ", dropOff20010);
-	// 	printDropOffPointFromCode(20040);
-	// 	printf("\n%d - ", dropOff20010);
-	// 	printDropOffPointFromCode(20050);
-	// }
-	// printf("=======================================================\n");
-
-
 	pauseAndContinueOnReturn();
 }
 
@@ -936,22 +854,7 @@ viewPassengerInformation(struct Bus trips[])
 {
 	clearScreen();
 
-	int nTripNumber;
-	int validInput = 0;
-	while (!validInput)
-	{
-		displayTripList(trips);
-		printf("Which trip's passenger information would you like to view?\n");
-		int *pInt = &nTripNumber;
-		scanf("%d", pInt);
-
-		if (!isValidTripNumber(nTripNumber))
-			printf("\nInvalid trip number. Please enter a valid trip number!\n\n");
-		else
-			validInput = 1;
-	}
-
-	struct Bus *bus = getBusFromTripNumber(trips, 22, nTripNumber);
+	struct Bus *bus = getInputTripNumber(trips);
 	struct Passenger passengerListSorted[16];
 	
 	int i, j;
@@ -1116,6 +1019,8 @@ passengerMenu(struct Bus trips[], int *nFullA, int *nFullB)
 		screenState = 100;
 	else
 		screenState = 200;
+	
+	getBusFull(trips, nFullA, nFullB);
 
 	return screenState;
 
@@ -1141,6 +1046,7 @@ arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 	printf("Select an Option: \n");
 
 	char selection;
+	printf("\n%d, %d\n", *nFullA, *nFullB);
 	scanf(" %c", &selection);
 	printf("\n");
 
@@ -1180,6 +1086,10 @@ arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 	}
 	else
 		screenState = 300;
+
+	// Check if full
+	if (!*nFullA || !*nFullB)
+		getBusFull(trips, nFullA, nFullB);	
 
 	return screenState;
 }

@@ -52,6 +52,19 @@ int main()
     inputPassenger(1, john, doe, 12313412, 10010, 15, &trips[0], 0);
     inputPassenger(1, johnass, john, 12313412, 10010, 16, &trips[0], 0);
 
+    int j;
+    for (i=1; i<MAX_TRIPS_MANILA-2; i++)
+    {
+        for (j=0; j<MAX_PASSENGERS; j++)
+        {
+            inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[i], 0);
+        }
+    }
+
+    for (j=1; j<MAX_PASSENGERS; j++)
+    {
+        inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS_MANILA-2], 0);
+    }
 
 	int screenState = 100;
     int nFullA = 0;

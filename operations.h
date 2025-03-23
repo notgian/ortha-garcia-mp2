@@ -35,8 +35,6 @@ void inputPassenger(int priority, String20 firstName, String20 lastName, int id,
 
 int inputTripNumber();
 
-void inputPassengerInformation(int tripNo, struct Bus trips[]);
-
 void encodePassengerInformation(struct Bus trips[]);
 
 /*
