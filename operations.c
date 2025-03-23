@@ -1062,6 +1062,62 @@ void loadPassengerFromFile(struct Bus trips[])
 	pauseAndContinueOnReturn();
 }
 
+void loadTripFromFile()
+{
+	clearScreen();
+
+	String20 filename;
+	printf("Input the name of the file (max 20 chars. and no spaces):\n");
+	scanf(" %20s", filename);
+
+	FILE *fp;
+
+	fp = fopen(filename, "rb");
+
+	if (fp == NULL)
+	{
+		printf("File with the name %s not found!", filename);
+	}	
+	else if (strcmp( (filename + strlen(filename) - 4), ".dat") != 0)
+	{
+		printf("File extension not supported! This operation only supports .dat files.\n");
+	}
+	else
+	{
+		struct Bus tripsRead[MAX_TRIPS];
+		fread(tripsRead, sizeof(struct Bus), MAX_TRIPS, fp);
+
+		printf("Displaying trip information for %s...\n\n", filename);
+
+		int i, j;
+		for (i=0; i<MAX_TRIPS; i++)
+		{
+			String50 embarkPointName;
+			getDropOffPointFromCode(tripsRead[i].route[0], embarkPointName);
+
+			for (j=0; j<MAX_PASSENGERS; j++)
+			{
+				if (tripsRead[i].passengers[j].onboard)
+				{
+					String50 dropOffName;
+					getDropOffPointFromCode(tripsRead[i].passengers[j].dropOff, dropOffName);
+					
+					printf("Trip Number       : %3d\n", tripsRead[i].tripNumber);
+					printf("Embarkation Point : %s\n", embarkPointName);
+					printf("Passenger Name    : %s, %s\n", tripsRead[i].passengers[j].lastName, tripsRead[i].passengers[j].firstName);
+					printf("ID Number         : %d\n", tripsRead[i].passengers[j].id);
+					printf("Priority          : %d\n", tripsRead[i].passengers[j].priority);
+					printf("Drop-Off Point    : %s\n\n", dropOffName);
+				}
+			}
+		}
+	}
+
+	printf("(End of File)\n");
+
+	pauseAndContinueOnReturn();
+}
+
 /* 
 	======================
 		MENU Functions
@@ -1193,6 +1249,7 @@ arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 	}
 	else if (selection == '6')
 	{
+		loadTripFromFile();
 		screenState = 320;
 	}
 	else if (selection == '7')

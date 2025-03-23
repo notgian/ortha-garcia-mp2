@@ -152,11 +152,10 @@ int main()
     }
 
     fclose(fp);
-
+    
     fp = fopen(fileNameDat, "wb");
-
     fwrite(trips, sizeof(struct Bus), MAX_TRIPS, fp);
-
+    
     fclose(fp);
 
 	printf("Closing program...");
