@@ -999,3 +999,10 @@ ID Number         : 12313412
 Priority          : 1
 Drop-Off Point    : Mamplasan Toll Exit
 
+Trip Number       : 109
+Embarkation Point : Gate 1: South Gate (LS Building Entrance)
+Passenger Name    : Ortha, Gian
+ID Number         : 12414697
+Priority          : 3
+Drop-Off Point    : Phase 5, San Jose Vilage
+

@@ -971,93 +971,96 @@ void loadPassengerFromFile(struct Bus trips[])
 	printf("Input the name of the file (max 20 chars. and no spaces):\n");
 	scanf(" %20s", filename);
 
-	FILE *fp;
-	fp = fopen(filename, "r");
+	FILE *fp = NULL;
+
+
+	fp = fopen(filename, "rb");
 
 	if (fp == NULL)
 	{
 		printf("File with the name %s not found!", filename);
 	}
+	else if (strlen(filename) < 4) // Protects against seg fault
+	{
+		printf("File extension not supported! This operation only supports .dat files.\n");
+	}	
+	else if (strcmp( (filename + strlen(filename) - 4), ".dat") != 0)
+	{
+		printf("File extension not supported! This operation only supports .dat files.\n");
+	}
 	else 
 	{
 		int nTripNo, nId, nDropOff, nEmbarkPoint, nPriority;
 		String20 firstName, lastName;
-		
-		int scans = scanPassengerInformation(fp, &nTripNo, &nEmbarkPoint, lastName, firstName, &nId, &nPriority, &nDropOff);
 
-		if (scans < 7)
+		fread(&nTripNo, sizeof(int), 1, fp);
+		fread(&nEmbarkPoint, sizeof(int), 1, fp);
+		fread(firstName, sizeof(String20), 1, fp);
+		fread(lastName, sizeof(String20), 1, fp);
+		fread(&nId, sizeof(int), 1, fp);
+		fread(&nPriority, sizeof(int), 1, fp);
+		fread(&nDropOff, sizeof(int), 1, fp);
+
+		fclose(fp);
+				
+		struct Bus *bus = NULL;
+
+		if (!isValidTripNumber(nTripNo))
 		{
-			printf("Failed to scan for information! Please check that the text file follows the format below\n\n");
-			printf("<trip number>\n");
-			printf("<embarkation point>\n");
-			printf("<passenger first name>, <passenger last name>\n");
-			printf("<id number>\n");
-			printf("<priority number>\n");
-			printf("<drop-off point>\n");
+			printf("Trip number provided is not valid! Aborting operation...\n");
 		}
 		else
 		{
-			struct Bus *bus = NULL;
+			bus = getBusFromTripNumber(trips, MAX_TRIPS, nTripNo);
 
-			if (!isValidTripNumber(nTripNo))
+			int validEmbark = 0;
+			int validId = 0;
+			int validPriority = 0;
+			int validDropOff = 0;
+
+			int i;
+			for (i=0; i<MAX_ROUTE_LENGTH; i++)
 			{
-				printf("Trip number provided is not valid! Aborting operation...\n");
+				if(nEmbarkPoint == bus->route[i])
+					validEmbark = 1;
+				if(nDropOff == bus->route[i])
+					validDropOff = 1;
+			}
+
+			if (nId >= 10000000 && nId <= 99999999 && !searchPassengerId(trips, nId))
+				validId = 1;
+
+			if (nPriority >= 1 && nPriority <= 6)
+				validPriority = 1;
+
+			if (!validEmbark || !validId || !validPriority || !validDropOff)
+			{
+				printf("Invalid data encountered!!\n");
+				if (!validEmbark)
+					printf("Invalid embarkation point provided. Enter a 5-digit embarkation  code or ensure that the embarkation point provided is on the route of the trip.\n");
+				if (!validId)
+					printf("Invalid ID number provided. Enter either an 8-digit ID number or an ID number of a passenger not currently onboard.\n");
+				if (!validPriority)
+					printf("Invalid priority number provided. Enter a priority number between 1 and 6.\n");
+				if (!validDropOff)
+					printf("Invalid drop-off point provided. Enter a 5-digit drop-off code or ensure that the drop-off point provided is on the route of the trip.\n");
 			}
 			else
 			{
-				bus = getBusFromTripNumber(trips, MAX_TRIPS, nTripNo);
-
-				int validEmbark = 0;
-				int validId = 0;
-				int validPriority = 0;
-				int validDropOff = 0;
-
-				int i;
-				for (i=0; i<MAX_ROUTE_LENGTH; i++)
-				{
-					if(nEmbarkPoint == bus->route[i])
-						validEmbark = 1;
-					if(nDropOff == bus->route[i])
-						validDropOff = 1;
-				}
-
-				if (nId >= 10000000 && nId <= 99999999 && !searchPassengerId(trips, nId))
-					validId = 1;
-
-				if (nPriority >= 1 && nPriority <= 6)
-					validPriority = 1;
-
-				if (!validEmbark || !validId || !validPriority || !validDropOff)
-				{
-					printf("Invalid data encountered!!\n");
-					if (!validEmbark)
-						printf("Invalid embarkation point provided. Enter a 5-digit embarkation  code or ensure that the embarkation point provided is on the route of the trip.\n");
-					if (!validId)
-						printf("Invalid ID number provided. Enter either an 8-digit ID number or an ID number of a passenger not currently onboard.\n");
-					if (!validPriority)
-						printf("Invalid priority number provided. Enter a priority number between 1 and 6.\n");
-					if (!validDropOff)
-						printf("Invalid drop-off point provided. Enter a 5-digit drop-off code or ensure that the drop-off point provided is on the route of the trip.\n");
-				}
-				else
-				{
-					printf("Information scanned successfully!\n");
-					printf("Inputting passenger...\n");
-					
-					inputPassenger(nPriority,
-								firstName,
-								lastName,
-								nId,
-								nDropOff,
-								-1,
-								bus,
-								0);	
-				}
+				printf("Information scanned successfully!\n");
+				printf("Inputting passenger...\n");
+				
+				inputPassenger(nPriority,
+							firstName,
+							lastName,
+							nId,
+							nDropOff,
+							-1,
+							bus,
+							0);	
 			}
 		}
 	}
-
-	fclose(fp);
 
 	pauseAndContinueOnReturn();
 }
@@ -1078,6 +1081,10 @@ void loadTripFromFile()
 	{
 		printf("File with the name %s not found!", filename);
 	}	
+	else if (strlen(filename) < 4) // Protects against seg fault
+	{
+		printf("File extension not supported! This operation only supports .dat files.\n");
+	}
 	else if (strcmp( (filename + strlen(filename) - 4), ".dat") != 0)
 	{
 		printf("File extension not supported! This operation only supports .dat files.\n");
@@ -1111,9 +1118,10 @@ void loadTripFromFile()
 				}
 			}
 		}
+		printf("(End of File)\n");
 	}
 
-	printf("(End of File)\n");
+	
 
 	pauseAndContinueOnReturn();
 }
