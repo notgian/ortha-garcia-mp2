@@ -15,7 +15,7 @@ int isTripFull(struct Bus bus);
 
 struct Bus* getBusFromTripNumber(struct Bus trips[], int n, int tripNumber);
 
-void displayTripList(int nFull);
+void displayTripList(struct Bus trips[]);
 
 int displayDropOff(int nTripNo);
 
@@ -35,7 +35,7 @@ void inputPassenger(int priority, String20 firstName, String20 lastName, int id,
 
 int inputTripNumber();
 
-void inputPassengerInformation(struct Bus *bus);
+void inputPassengerInformation(int tripNo, struct Bus trips[]);
 
 void encodePassengerInformation(struct Bus trips[]);
 
@@ -65,9 +65,9 @@ void searchPassenger(struct Bus trips[]);
 
 int mainMenu();
 
-int passengerMenu(struct Bus trips[]);
+int passengerMenu(struct Bus trips[], int *nFullA, int *nFullB);
 
-int arrowsPersonnelMenu(struct Bus trips[]);
+int arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB);
 
 
 #endif

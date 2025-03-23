@@ -15,15 +15,25 @@ int main()
     initializeBuses(trips);
 
     // TODO: Remove since this was only for debugging
-    int i,j;
+    int i;
+    // for (i=0; i<MAX_TRIPS; i++)
+    // {
+    //     printf("\n\nAE-%d\n", trips[i].tripNumber);
+    //     for (j=0; j<MAX_ROUTE_LENGTH; j++)
+    //     {
+    //         printf("%d\n", trips[i].route[j]);
+    //     }
+    // }
+
     for (i=0; i<MAX_TRIPS; i++)
     {
-        printf("\n\nAE-%d\n", trips[i].tripNumber);
-        for (j=0; j<MAX_ROUTE_LENGTH; j++)
-        {
-            printf("%d\n", trips[i].route[j]);
-        }
+        printf("Trip Number: %d\n", trips[i].tripNumber);
+
+        if (trips[i].next != NULL)
+            printf("   Next: %d\n", trips[i].next->tripNumber);
     }
+
+    
 
     inputPassenger(1, john, doe, 12313412, 10010, 1, &trips[0], 0);
     inputPassenger(1, john, doe, 12313412, 10010, 2, &trips[0], 0);
@@ -44,6 +54,8 @@ int main()
 
 
 	int screenState = 100;
+    int nFullA = 0;
+    int nFullB = 0;
 
 	while (screenState > 0)
 	{
@@ -55,11 +67,11 @@ int main()
 		
 		else if (parentMenu == 200) // Selected menu is passenger
 		{
-			screenState = passengerMenu(trips);
+			screenState = passengerMenu(trips, &nFullA, &nFullB);
 		}
 		else if (parentMenu == 300) // Selected Menu is arrow personnel
 		{
-			screenState = arrowsPersonnelMenu(trips);
+			screenState = arrowsPersonnelMenu(trips, &nFullA, &nFullB);
 		}
 	}
 

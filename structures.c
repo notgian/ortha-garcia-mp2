@@ -61,7 +61,7 @@ initializeBuses(struct Bus trips[22])
         
         busInst.ETD = 0;
         busInst.specialBus = 0;
-        busInst.next = NULL;
+
         busInst.tripNumber = -1;
         busInst.nReserveCount = 0;
         setEmptyPassengers(busInst.passengers, MAX_PASSENGERS);
@@ -70,7 +70,7 @@ initializeBuses(struct Bus trips[22])
         for (i = 0; i < MAX_ROUTE_LENGTH; i++)
         {
             busInst.route[i] = 0;
-        }
+        }   
 
         trips[i] = busInst;
     }
@@ -87,17 +87,19 @@ initializeBuses(struct Bus trips[22])
         
         if (i % 2 == 0) // Odd numbered buses
         {
-            trips[i].route[0] = 20050; // Embarkation Point
+            trips[i].route[0] = 20050;
             trips[i].route[1] = 10010; 
             trips[i].route[2] = 10020;
             trips[i].route[3] = 10040;
         }
         else // Even numbered buses
         {
-            trips[i].route[0] = 20050; // Embarkation Point
+            trips[i].route[0] = 20050;
             trips[i].route[1] = 10030; 
             trips[i].route[2] = 10040;
         }
+
+        trips[i].next = NULL;
     }
 
     // Setting trip numbers for the Laguna to Manila trip
@@ -109,7 +111,7 @@ initializeBuses(struct Bus trips[22])
 
         if (i % 2 == 0) // Even numbered buses
         {
-            trips[i+10].route[0] = 10040; // Embarkation Point
+            trips[i+10].route[0] = 10040; 
             trips[i+10].route[1] = 20010; 
             trips[i+10].route[2] = 20030;
             trips[i+10].route[3] = 20040;
@@ -117,23 +119,23 @@ initializeBuses(struct Bus trips[22])
         }
         else  // Odd numbered buses
         {
-            trips[i+10].route[0] = 10040; // Embarkation Point
+            trips[i+10].route[0] = 10040;
             trips[i+10].route[1] = 20020; 
             trips[i+10].route[2] = 20030;
             trips[i+10].route[3] = 20040;
             trips[i+10].route[4] = 20050;
         }
+
+        trips[i+10].next = NULL;
     }
 
-    // Link Manila buses
-    for (i=8; i >=0; i--)
+    for (i=MAX_TRIPS_MANILA-3; i>=0; i--)
     {
         trips[i].next = &trips[i+1];
     }
 
-    // Link Laguna Buses
-    for (i=10; i >=0; i--)
+    for (i=MAX_TRIPS_LAGUNA-3; i>=0; i--)
     {
-        trips[i].next = &trips[i+1];
+        trips[i+10].next = &trips[i+11];
     }
 }

@@ -85,30 +85,49 @@ struct Bus* getBusFromTripNumber(struct Bus trips[], int n, int tripNumber)
    @return void
 */ 
 void 
-displayTripList(int nFull)
+displayTripList(struct Bus trips[])
 {
-	printf("\n==========List of Trips==========\n");
+	struct Bus *currentManilaTrip = &trips[0];
+	struct Bus *currentLagunaTrip = &trips[10];
 
+	printf("\n|===============List of Trips===============|\n");
 	printf("|====MANILA-LAGUNA====|====LAGUNA-MANILA====|\n");
-	printf("|        AE-101       |        AE-150       |\n");
-	printf("|        AE-102       |        AE-151       |\n");
-	printf("|        AE-103       |        AE-152       |\n");
-	printf("|        AE-104       |        AE-153       |\n");
-	printf("|        AE-105       |        AE-154       |\n");
-	printf("|        AE-106       |        AE-155       |\n");
-	printf("|        AE-107       |        AE-156       |\n");
-	printf("|        AE-108       |        AE-157       |\n");
-	printf("|        AE-109       |        AE-158       |\n");
-	printf("|                     |        AE-159       |\n");
-	printf("|                     |        AE-160       |\n");
-
-	if (nFull)
-	{
-		printf("|===============SPECIAL TRIPS===============|\n");
-		printf("|        AE-110       |        AE-161       |\n");
-	}
 	
+	while (currentManilaTrip != NULL || currentLagunaTrip != NULL)
+	{
+		if (currentManilaTrip != NULL)
+		{
+			printf("|        AE-%3d       |", currentManilaTrip->tripNumber);
+			currentManilaTrip = currentManilaTrip->next;
+		}
+		else
+			printf("|                     |");
+
+		if (currentLagunaTrip != NULL)
+		{
+			printf("        AE-%3d       |\n", currentLagunaTrip->tripNumber);
+			currentLagunaTrip = currentLagunaTrip->next;
+		}
+		else
+			printf("                     |\n");
+			
+	}
 	printf("|===========================================|\n");
+
+	//   printf("|====MANILA-LAGUNA====|====LAGUNA-MANILA====|\n");
+	//   printf("|        AE-101       |        AE-150       |\n");
+	//   printf("|        AE-102       |        AE-151       |\n");
+	//   printf("|        AE-103       |        AE-152       |\n");
+	//   printf("|        AE-104       |        AE-153       |\n");
+	//   printf("|        AE-105       |        AE-154       |\n");
+	//   printf("|        AE-106       |        AE-155       |\n");
+	//   printf("|        AE-107       |        AE-156       |\n");
+	//   printf("|        AE-108       |        AE-157       |\n");
+	//   printf("|        AE-109       |        AE-158       |\n");
+	//   printf("|                     |        AE-159       |\n");
+	//   printf("|                     |        AE-160       |\n");
+
+	// printf("|===========================================|\n");
 
 }
 
@@ -429,13 +448,13 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
    @return int - the trip number the user input
 */
 int 
-inputTripNumber()
+inputTripNumber(struct Bus trips[])
 {
 	int trip;
 	printf("What trip will you be boarding? (Please input the 3-digit number of the trip excluding the \"AE\")\n\n");
 	
 	// TODO: Implement the nFull function
-	displayTripList(0);
+	displayTripList(trips);
 	
 	printf("Enter Trip Number:");
 	scanf("%d", &trip);
@@ -445,17 +464,41 @@ inputTripNumber()
 	else
 	{
 		printf("Please return a valid trip number and try again.\n");
-		return inputTripNumber();
+		return inputTripNumber(trips);
 	}
-}	
+}
+
+int
+searchPassengerId(struct Bus trips[], int searchId)
+{
+	int i, j;
+	int found = 0;
+	for (i=0; i<MAX_TRIPS; i++)
+	{
+		for (j=0; j<MAX_PASSENGERS; j++)
+		{
+			if (trips[i].passengers[j].id == searchId)
+			{
+				found = 1;
+				i = MAX_TRIPS;
+				j = MAX_PASSENGERS;
+			}
+		}
+	}
+
+	return found;	
+}
 
 /* inputPassengerInformation: Takes input from the user for encoding the passenger information. 
    @param bus - pointer to the bus the passenger will be encoded to
    @return void
 */
 void 
-inputPassengerInformation(struct Bus *bus) 
+inputPassengerInformation(int tripNo, struct Bus trips[]) 
 {
+	int result = 0;
+	struct Bus *bus = getBusFromTripNumber(trips, MAX_TRIPS, tripNo);
+	
 	printf("==========Enter Details Below==========\n");
 	int priority, id, dropOff, nReserve;
 	String20 firstName, lastName;
@@ -466,10 +509,13 @@ inputPassengerInformation(struct Bus *bus)
 	while(!validInput)
 	{
 		scanf(" %d", &id);
-		if (!(id >= 10000000 && id <= 99999999))
-				    
+		if (!(id >= 10000000 && id <= 99999999))		    
 		{
 			printf("\nInvalid ID number! Please input a valid 8-digit id number\n");
+		}
+		else if (searchPassengerId(trips, id))
+		{
+			printf("\nPassenger with ID number %d is already boarded on a different trip. Please input a different passenger id.\n", id);
 		}
 		else
 			validInput = 1;
@@ -584,13 +630,10 @@ void
 encodePassengerInformation(struct Bus trips[])
 {
 	clearScreen();
-
-	int tripNo = inputTripNumber();
-	struct Bus *bus = getBusFromTripNumber(trips, 22, tripNo);
+	int tripNo = inputTripNumber(trips);
 
 	clearScreen();
-
-	inputPassengerInformation(bus);
+	inputPassengerInformation(tripNo, trips);
 
 	pauseAndContinueOnReturn();
 }
@@ -718,7 +761,7 @@ viewPassengerCount(struct Bus trips[])
 	int validInput = 0;
 	while (!validInput)
 	{
-		displayTripList(0);
+		displayTripList(trips);
 		printf("Which trip would you like to view?\n");
 		scanf("%d", &nTripNumber);
 
@@ -748,7 +791,7 @@ viewDropOffCount(struct Bus trips[])
 	int validInput = 0;
 	while (!validInput)
 	{
-		displayTripList(0);
+		displayTripList(trips);
 		printf("Which trip's drop-off information would you like to view?\n");
 		scanf(" %d", &nTripNo);
 
@@ -897,7 +940,7 @@ viewPassengerInformation(struct Bus trips[])
 	int validInput = 0;
 	while (!validInput)
 	{
-		displayTripList(0);
+		displayTripList(trips);
 		printf("Which trip's passenger information would you like to view?\n");
 		int *pInt = &nTripNumber;
 		scanf("%d", pInt);
@@ -1048,7 +1091,7 @@ mainMenu()
    @return int - returns the screenstate for the following iteration of the mainloop
 */
 int 
-passengerMenu(struct Bus trips[])
+passengerMenu(struct Bus trips[], int *nFullA, int *nFullB)
 {
 	clearScreen();
 
@@ -1066,6 +1109,7 @@ passengerMenu(struct Bus trips[])
 	if (selection == '1') 
 	{
 		encodePassengerInformation(trips);
+
 		screenState = 210;
 	}
 	else if (selection == '2')
@@ -1082,7 +1126,7 @@ passengerMenu(struct Bus trips[])
    @return int - returns the screenstate for the following iteration of the mainloop
 */
 int 
-arrowsPersonnelMenu(struct Bus trips[])
+arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 {
 	clearScreen();
 
