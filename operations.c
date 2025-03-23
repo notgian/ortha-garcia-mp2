@@ -189,6 +189,29 @@ printDropOffPointFromCode(int code)
 		printf("%-50s", "Gate 1: South Gate (LS Building Entrance)");
 }
 
+void 
+getDropOffPointFromCode(int code, String50 name)
+{
+	if (code == 10010) 
+		strcpy(name, "Mamplasan Toll Exit");
+	else if (code == 10020) 
+		strcpy(name, "Phase 5, San Jose Vilage");
+	else if (code == 10030) 
+		strcpy(name, "Laguna Blvd. Guard House");
+	else if (code == 10040) 
+		strcpy(name, "Milagros Del Rosario Building - East Canopy");
+	else if (code == 20010) 
+		strcpy(name, "Petron Gasoline Station along Gil Puyat Avenue");
+	else if (code == 20020) 
+		strcpy(name, "College of St. Benilde (CSB) along Taft Avenue");
+	else if (code == 20030) 
+		strcpy(name, "Gate 4: Gokongwei Gate");
+	else if (code == 20040) 
+		strcpy(name, "Gate 2: North Gate (HSSH)");
+	else if (code == 20050) 
+		strcpy(name, "Gate 1: South Gate (LS Building Entrance)");
+}
+
 /* dropOffInRoute: Returns a value based on whether the specified drop off is in the specified route
    @param dropOff - the specified drop-off point to search for
    @param route   - the route to search the drop-off point for
@@ -1033,6 +1056,8 @@ void loadPassengerFromFile(struct Bus trips[])
 			}
 		}
 	}
+
+	fclose(fp);
 
 	pauseAndContinueOnReturn();
 }

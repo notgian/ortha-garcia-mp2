@@ -10,6 +10,7 @@
 
 
 typedef char String20[21];
+typedef char String50[51];
 
 struct Passenger {
     int onboard;
