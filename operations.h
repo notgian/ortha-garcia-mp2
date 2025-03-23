@@ -17,11 +17,17 @@ struct Bus* getBusFromTripNumber(struct Bus trips[], int n, int tripNumber);
 
 void displayTripList(struct Bus trips[]);
 
-int displayDropOff(int nTripNo);
+struct Bus *getInputTripNumber(struct Bus trips[]);
 
 int isValidTripNumber(int nTripNumber);
 
 void printDropOffPointFromCode(int code);
+
+int dropOffInRoute(int dropOff, int route);
+
+void clearScreen();
+
+void pauseAndContinueOnReturn();
 
 /*
 	============================
@@ -33,9 +39,11 @@ void setPassenger(struct Passenger *passenger, int priority, String20 firstName,
 
 void inputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus, int nReserve);
 
-int inputTripNumber();
+int searchPassengerId(struct Bus trips[], int searchId);
 
 void encodePassengerInformation(struct Bus trips[]);
+
+void getBusFull(struct Bus trips[], int *nFullA, int *nFullB);
 
 /*
 	============================

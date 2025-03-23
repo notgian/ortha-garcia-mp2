@@ -63,7 +63,7 @@ isTripFull(struct Bus bus)
    @param trips      - list of bus trips
    @param n          - number of total trips; only used for the loop
    @param tripNumber - trip number of the desired bus
-   @return bus*      - pointer to the bus with the corresponding trip number. Pointer is set to NULL if no bus is found.
+   @return Bus*      - pointer to the bus with the corresponding trip number. Pointer is set to NULL if no bus is found.
 */ 
 struct Bus* getBusFromTripNumber(struct Bus trips[], int n, int tripNumber)
 {
@@ -115,6 +115,10 @@ displayTripList(struct Bus trips[])
 	printf("|===========================================|\n");
 }
 
+/* getInputTripNumber: takes user input for a certain bus' trip number and returns a pointer to that bus 
+   @param trips - list of bus trips
+   @return Bus* - pointer to the bus with the specified trip number
+*/ 
 struct Bus 
 *getInputTripNumber(struct Bus trips[])
 {
@@ -146,63 +150,6 @@ struct Bus
 	}
 
 	return bus;
-}
-
-/* displayDropOff: displays the list of drop off points
-   @param nTripNo - trip number that determines which drop off points are available for the route of the bus
-   @return int - returns the number of total options for the drop off points to choose from
-*/ 
-int displayDropOff(int nTripNo)
-{
-	int options = -1;
-	if(nTripNo == 101 || nTripNo == 103 || nTripNo == 105 || nTripNo == 107 || nTripNo == 109)
-	{
-		printf("==========Drop-Off Points==========\n");
-		printf("1 - Mamplasan Toll Exit\n");
-		printf("2 - Phase 5, San Jose Vilage\n");
-		printf("3 - Milagros Del Rosario Building - East Canopy\n");
-		options = 3;
-	}
-	else if(nTripNo == 102 || nTripNo == 104 || nTripNo == 106 || nTripNo == 108 || nTripNo == 110)
-	{
-		printf("==========Drop-Off Points==========\n");
-		printf("1 - Laguna Blvd. Guard House(across Paseo PHOENIX Gasoline Station)\n");
-		printf("2 -  Milagros Del Rosario Building - East Canopy\n");
-		options = 2;
-	}
-	else if(nTripNo == 151 || nTripNo == 153 || nTripNo == 155 || nTripNo == 157 || nTripNo == 159 || nTripNo == 161)
-	{
-		printf("==========Drop-Off Points==========\n");
-		printf("1 - Petron Gasoline Station along Gil Puyat Avenue \n");
-		printf("2 - Gate 4: Gokongwei Gate \n");
-		printf("3 - Gate 2: North Gate (HSSH) \n");
-		printf("4 - Gate 1: South Gate (LS Building Entrance) \n");
-		options = 4;
-	}
-	else if(nTripNo == 150 || nTripNo == 152 || nTripNo == 154 || nTripNo == 156 || nTripNo == 158 || nTripNo == 160)
-	{
-		printf("==========Drop-Off Points==========\n");
-		printf("1 - College of St. Benilde (CSB) along Taft Avenue  \n");
-		printf("2 - Gate 4: Gokongwei Gate \n");
-		printf("3 - Gate 2: North Gate (HSSH) \n");
-		printf("4 - Gate 1: South Gate (LS Building Entrance) \n");
-		options = 4;
-	}
-
-	return options;
-	
-}
-
-void clearScreen()
-{
-	printf("\e[1;1H\e[2J"); // Regex clear function
-}
-
-void pauseAndContinueOnReturn()
-{
-	printf("\nType any character and press return to continue\n");
-	scanf(" \n");
-	getchar();
 }
 
 /* isValidTripNumber: Takes in an integer and determines if it a valid trip number in the context of the program
@@ -242,6 +189,11 @@ printDropOffPointFromCode(int code)
 		printf("%-50s", "Gate 1: South Gate (LS Building Entrance)");
 }
 
+/* dropOffInRoute: Returns a value based on whether the specified drop off is in the specified route
+   @param dropOff - the specified drop-off point to search for
+   @param route   - the route to search the drop-off point for
+   @return int    - returns 1 if the drop-off point point is present in the route, 0 otherwise
+*/
 int
 dropOffInRoute(int dropOff, int route)
 {
@@ -249,6 +201,24 @@ dropOffInRoute(int dropOff, int route)
 
 	return 0;
 
+}
+
+/* clearScreen: Clears the screen with ANSI regex
+   @return void
+*/
+void clearScreen()
+{
+	printf("\e[1;1H\e[2J"); // Regex clear function
+}
+
+/* pauseAndContinueOnReturn: Pauses the program and waits for the user to input any character and press enter
+   @return void
+*/
+void pauseAndContinueOnReturn()
+{
+	printf("\nType any character and press return to continue\n");
+	scanf(" \n");
+	getchar();
 }
 
 /*
@@ -459,23 +429,6 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 
 }
 
-/* inputTripNumber: Takes input from the user an attempts to board them onto a particular bus.
-   @param bus - pointer to the bus the passenger will be encoded to
-   @return int - the trip number the user input
-*/
-int 
-inputTripNumber(struct Bus trips[])
-{
-	int trip;
-	printf("What trip will you be boarding? (Please input the 3-digit number of the trip excluding the \"AE\")\n\n");
-	
-	// TODO: Implement the nFull function
-	trip = getInputTripNumber(trips)->tripNumber;
-
-	return trip;
-}
-
-
 /* searchPassengerId: Takes the list of trips and searches for a specified id among the passengers in all trips
    @param trips - list of all the bus trips
    @return int  - returns 1 if a passenger with the specified id is found, 0 otherwise 
@@ -509,10 +462,10 @@ void
 encodePassengerInformation(struct Bus trips[])
 {
 	clearScreen();
-	int tripNo = inputTripNumber(trips);
+	printf("What trip will you be boarding? (Please input the 3-digit number of the trip excluding the \"AE\")\n\n");
+	int tripNo = getInputTripNumber(trips)->tripNumber;
 
 	clearScreen();
-
 	struct Bus *bus = getBusFromTripNumber(trips, MAX_TRIPS, tripNo);
 	
 	printf("==========Enter Details Below==========\n");
