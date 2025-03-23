@@ -160,7 +160,6 @@ int displayDropOff(int nTripNo)
 void clearScreen()
 {
 	printf("\e[1;1H\e[2J"); // Regex clear function
-	printf("\n");
 }
 
 void pauseAndContinueOnReturn()
@@ -256,7 +255,6 @@ setPassenger(struct Passenger *passenger, int priority, String20 firstName, Stri
 void 
 inputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus, int nReserve)
 {
-	int nWillReserve = 0;
 	if (bus->tripNumber == -1)
     {
         printf("There are no more remaining bus trips!\n");
@@ -752,27 +750,22 @@ viewDropOffCount(struct Bus trips[])
 	{
 		displayTripList(0);
 		printf("Which trip's drop-off information would you like to view?\n");
-		scanf("%d", &nTripNo);
+		scanf(" %d", &nTripNo);
 
-		validInput = 1;
-
-		// if (!isValidTripNumber(nTripNumber) )
-		// 	printf("\nInvalid trip number. Please enter a valid trip number!\n\n");
-		// else
-		// 	validInput = 1;
+		if (!isValidTripNumber(nTripNo) )
+			printf("\nInvalid trip number. Please enter a valid trip number!\n\n");
+		else
+			validInput = 1;
 	}
 
-	struct Bus *bus = getBusFromTripNumber(trips, 22, nTripNo);
-
+	struct Bus *bus = getBusFromTripNumber(trips, 22, 101);	
 
 	int routeCounter[MAX_ROUTE_LENGTH] = {0,0,0,0,0};
-
-	printf("HERE!");
 
 	int i, j;
 	for (i=1; i<MAX_ROUTE_LENGTH; i++)
 	{
-		for (j=0; i<MAX_PASSENGERS; j++)
+		for (j=0; j<MAX_PASSENGERS; j++)
 		{
 			if (bus->route[i] == bus->passengers[j].dropOff && bus->route[i] != 0)
 			{
@@ -783,7 +776,7 @@ viewDropOffCount(struct Bus trips[])
 
 
 	printf("=======================================================\n");
-	printf("Drop-off count for Trip Number AE-%d\n", nTripNo);
+	printf("Drop-off count for Trip Number AE-%d\n", 101);
 	
 	for (i=1; i<MAX_ROUTE_LENGTH; i++)
 	{

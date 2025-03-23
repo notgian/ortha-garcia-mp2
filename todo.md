@@ -6,6 +6,7 @@
 [x] Passenger ejection -> perform from the back, check if not reserved
 [x] Bus Reassignment: setting default drop-off point
 [ ] Fix the viewDropOff seg fault error (????)
+[ ] Check the passenger reassignment (if it really boots out the first *lowest* priority passenger)
 
 [ ] Bus selection and viewing: validation for special shuttles when not yet busy    
  
