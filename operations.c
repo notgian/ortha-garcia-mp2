@@ -896,10 +896,146 @@ searchPassenger(struct Bus trips[])
 // [/] 1 - View Passenger Count
 // [/] 2 - View Drop-Off Count
 // [/] 3 - View Passenger Information
-// [ ] 4 - Load Passenger(Single Passengerpa) 
+// [/] 4 - Load Passenger(Single Passengerpa) 
 // [/] 5 - Search Passenger
 // [ ] 6 - Load Recent Trip File for Viewing
 // [ ] 7 - Back to Main Menu
+
+/* scanPassengerInformation: scans a passengers information from a file into particular variables
+   @param fp            - file pointer of the file to be scanned
+   @param *nTripNo      - pointer to the trip number variable to store the data
+   @param *nEmbarkPoint - pointer to the embark point variable to store the data
+   @param lastName      - last name string to store the data
+   @param firstName     - first name string to store the data
+   @param *nId          - pointer to the id variable to store the data
+   @param *nPriority    - pointer to the priority variable to store the data
+   @param *nDropOff     - pointer to drop-off point varialbe to store the data
+   @return int          - returns the number of successfully scanned parameters
+*/
+int scanPassengerInformation(FILE *fp, int *nTripNo, int *nEmbarkPoint, String20 lastName, String20 firstName, int *nId, int *nPriority, int *nDropOff)
+{
+	/*
+		Format for scanning passenger information:
+		<trip number>
+		<embarkation point>
+		<passenger first name>, <passenger last name>
+		<id number>
+		<priority number>
+		<drop-off point>
+	*/
+	int k = 0;
+
+	k += fscanf(fp, " %d", nTripNo);
+	k += fscanf(fp, " %d", nEmbarkPoint);
+	k += fscanf(fp, " %[^,],", lastName);
+	k += fscanf(fp, " %s", firstName);
+	k += fscanf(fp, " %d", nId);
+	k += fscanf(fp, " %d", nPriority);
+	k += fscanf(fp, " %d", nDropOff);
+
+	return k;
+}
+
+/* loadPassengerFromFile: loads passenger information from a file and attempts to board them onto a trip
+   @param trips - list of bus trips
+   @return void
+*/
+void loadPassengerFromFile(struct Bus trips[])
+{
+	clearScreen();
+
+	String20 filename;
+	printf("Input the name of the file (max 20 chars. and no spaces):\n");
+	scanf(" %20s", filename);
+
+	FILE *fp;
+	fp = fopen(filename, "r");
+
+	if (fp == NULL)
+	{
+		printf("File with the name %s not found!", filename);
+	}
+	else 
+	{
+		int nTripNo, nId, nDropOff, nEmbarkPoint, nPriority;
+		String20 firstName, lastName;
+		
+		int scans = scanPassengerInformation(fp, &nTripNo, &nEmbarkPoint, lastName, firstName, &nId, &nPriority, &nDropOff);
+
+		if (scans < 7)
+		{
+			printf("Failed to scan for information! Please check that the text file follows the format below\n\n");
+			printf("<trip number>\n");
+			printf("<embarkation point>\n");
+			printf("<passenger first name>, <passenger last name>\n");
+			printf("<id number>\n");
+			printf("<priority number>\n");
+			printf("<drop-off point>\n");
+		}
+		else
+		{
+			struct Bus *bus = NULL;
+
+			if (!isValidTripNumber(nTripNo))
+			{
+				printf("Trip number provided is not valid! Aborting operation...\n");
+			}
+			else
+			{
+				bus = getBusFromTripNumber(trips, MAX_TRIPS, nTripNo);
+
+				int validEmbark = 0;
+				int validId = 0;
+				int validPriority = 0;
+				int validDropOff = 0;
+
+				int i;
+				for (i=0; i<MAX_ROUTE_LENGTH; i++)
+				{
+					if(nEmbarkPoint == bus->route[i])
+						validEmbark = 1;
+					if(nDropOff == bus->route[i])
+						validDropOff = 1;
+				}
+
+				if (nId >= 10000000 && nId <= 99999999 && !searchPassengerId(trips, nId))
+					validId = 1;
+
+				if (nPriority >= 1 && nPriority <= 6)
+					validPriority = 1;
+
+				if (!validEmbark || !validId || !validPriority || !validDropOff)
+				{
+					printf("Invalid data encountered!!\n");
+					if (!validEmbark)
+						printf("Invalid embarkation point provided. Enter a 5-digit embarkation  code or ensure that the embarkation point provided is on the route of the trip.\n");
+					if (!validId)
+						printf("Invalid ID number provided. Enter either an 8-digit ID number or an ID number of a passenger not currently onboard.\n");
+					if (!validPriority)
+						printf("Invalid priority number provided. Enter a priority number between 1 and 6.\n");
+					if (!validDropOff)
+						printf("Invalid drop-off point provided. Enter a 5-digit drop-off code or ensure that the drop-off point provided is on the route of the trip.\n");
+				}
+				else
+				{
+					printf("Information scanned successfully!\n");
+					printf("Inputting passenger...\n");
+					
+					inputPassenger(nPriority,
+								firstName,
+								lastName,
+								nId,
+								nDropOff,
+								-1,
+								bus,
+								0);	
+				}
+			}
+		}
+	}
+
+	pauseAndContinueOnReturn();
+}
 
 /* 
 	======================
@@ -1022,6 +1158,7 @@ arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 	}
 	else if (selection == '4')
 	{
+		loadPassengerFromFile(trips);
 		screenState = 320;
 	}
 	else if (selection == '5')
