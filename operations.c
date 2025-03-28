@@ -397,7 +397,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
             printf("   Seat Number : %d\n", seatNumber + 1);
             printf("   Trip Number : AE-%d\n", bus->tripNumber);
         }
-        else if (bus->passengers[seatNumber].priority > priority && bus->passengers->relocated != 1) //If the seat is taken by a lower-priority passenger, displace them
+        else if (bus->passengers[seatNumber].priority > priority) //If the seat is taken by a lower-priority passenger, displace them
         {
             tempPassenger = bus->passengers[seatNumber];
             setPassenger(&(bus->passengers[seatNumber]),
@@ -434,7 +434,6 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
                                  tempPassenger.id,
                                  tempPassenger.dropOff,
                                  tempPassenger.reserved);
-                    bus->passengers[i].relocated = 1; 				// Mark as relocated so that they cannot be evicted off the bus anymore.
                     relocated = 1;
 
                     printf("\nPassenger %s %s has been relocated to seat %d.\n",
@@ -448,7 +447,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 
                         for (int j = nIndex - 1; j >= 0; j--)
                         {
-                            if (bus->passengers[j].reserved == 0 && bus->passengers[j].relocated == 0 &&
+                            if (bus->passengers[j].reserved == 0 && 
                                 (lowestPriorityPassenger == NULL || bus->passengers[j].priority > lowestPriorityPassenger->priority))
                             {
                                 lowestPriorityPassenger = &(bus->passengers[j]);
