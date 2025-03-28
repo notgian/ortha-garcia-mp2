@@ -21,7 +21,7 @@ int main()
     {
         for (j=0; j<MAX_PASSENGERS; j++)
         {
-            inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[i], 0);
+            inputPassenger(6, john, doe, 12313412, 10010, -1, &trips[i], 0);
         }
     }
 
