@@ -11,7 +11,7 @@ createEmptyPassenger()
 {
     struct Passenger emptyPassenger;
     emptyPassenger.onboard = 0;
-    emptyPassenger.priority = 0;
+    emptyPassenger.priority = 7;
     emptyPassenger.id = 0;
     emptyPassenger.dropOff = 0;
     emptyPassenger.reserved = 0;
