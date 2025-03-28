@@ -3,6 +3,8 @@
 
 #include "structures.h"
 
+int stringToInt(String20 str);
+
 /*
     ====================================
         Bus and Passenger Operations

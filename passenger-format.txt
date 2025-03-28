@@ -1,6 +1,0 @@
-<trip number>
-<embarkation point>
-<passenger first name>, <passenger last name>
-<id number>
-<priority number>
-<drop-off point>

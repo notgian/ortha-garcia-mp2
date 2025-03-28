@@ -11,6 +11,7 @@
 
 typedef char String20[21];
 typedef char String50[51];
+typedef char String100[51];
 
 struct Passenger {
     int onboard;
@@ -24,7 +25,6 @@ struct Passenger {
 
 struct Bus {
     int tripNumber;
-    int ETD;
     int dispatchable;
     int route[MAX_ROUTE_LENGTH]; // = [embarkation point, drop off 1, drop off 2, drop off 3]
     int nReserveCount;

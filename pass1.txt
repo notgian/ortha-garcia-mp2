@@ -1,8 +1,6 @@
-109
-20050
-Gian
-Ortha
-12414697
-3
-10020
-pass1.dat
+Trip Number: 109
+Embarkation Point: Gate 1: South Gate (LS Building Entrance)
+Passenger Name: doe, john
+ID Number: 12414697
+Priority: 5
+Drop-Off Point: Mamplasan Toll Exit

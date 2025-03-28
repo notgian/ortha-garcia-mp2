@@ -11,6 +11,31 @@ otherwise plagiarized the work of other students and/or persons.
 
 #include "operations.h"
 
+/* 
+	=============================
+		Misc Helper Functions
+	=============================
+*/
+
+/* stringToInt: Takes a string and returns its equivalent in integer form
+   @param str - string to convert to int
+   @return int - the string in int form
+*/ 
+int stringToInt(String20 str)
+{
+    int i;
+    int n = 0;
+    int length = (int) strlen(str);
+    for (i=0; i < length; i++)
+    {
+        char ch = str[i];
+        int digit = ch - '0';
+        n += digit * pow(10, (length-i-1));
+    }
+
+    return n;
+}
+
 /*
 	====================================
    		Bus and Passenger Operations
@@ -131,7 +156,7 @@ struct Bus
 		displayTripList(trips);
 		printf("Please input a trip number from the list above.\n");
 		
-		scanf("%d", &nTripNumber);
+		scanf(" %d", &nTripNumber);
 
 		if (!isValidTripNumber(nTripNumber))
 			printf("\nInvalid trip number. Please enter a valid trip number.\n\n");
@@ -210,6 +235,32 @@ getDropOffPointFromCode(int code, String50 name)
 		strcpy(name, "Gate 2: North Gate (HSSH)");
 	else if (code == 20050) 
 		strcpy(name, "Gate 1: South Gate (LS Building Entrance)");
+}
+
+int
+getDropOffPointFromString(String50 string)
+{
+	if (strcmp(string, "Mamplasan Toll Exit") == 0)
+		return 10010;
+	else if (strcmp(string, "Phase 5, San Jose Vilage") == 0)
+		return 10020;
+	else if (strcmp(string, "Laguna Blvd. Guard House") == 0)
+		return 10030;
+	else if (strcmp(string, "Milagros Del Rosario Building - East Canopy") == 0)
+		return 10040;
+
+	else if (strcmp(string, "Petron Gasoline Station along Gil Puyat Avenue") == 0)
+		return 20010;
+	else if (strcmp(string, "College of St. Benilde (CSB) along Taft Avenue") == 0)
+		return 20020;
+	else if (strcmp(string, "Gate 4: Gokongwei Gate") == 0)
+		return 20030;
+	else if (strcmp(string, "Gate 2: North Gate (HSSH)") == 0)
+		return 20040;
+	else if (strcmp(string, "Gate 1: South Gate (LS Building Entrance)") == 0)
+		return 20050;
+	
+	return -1;
 }
 
 /* dropOffInRoute: Returns a value based on whether the specified drop off is in the specified route
@@ -413,7 +464,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 		else if(seatNumber == -1 && nReserve == 1 && bus->nReserveCount < 5)
 		{
 			printf("What seat do you want to occupy?\n");
-			scanf("%d", &seatNumber);
+			scanf(" %d", &seatNumber);
 			setPassenger(&(bus->passengers[seatNumber-1]),
 					priority,
 					firstName,
@@ -974,7 +1025,7 @@ void loadPassengerFromFile(struct Bus trips[])
 	FILE *fp = NULL;
 
 
-	fp = fopen(filename, "rb");
+	fp = fopen(filename, "r");
 
 	if (fp == NULL)
 	{
@@ -982,26 +1033,39 @@ void loadPassengerFromFile(struct Bus trips[])
 	}
 	else if (strlen(filename) < 4) // Protects against seg fault
 	{
-		printf("File extension not supported! This operation only supports .dat files.\n");
+		printf("File extension not supported! This operation only supports .txt files.\n");
 	}	
-	else if (strcmp( (filename + strlen(filename) - 4), ".dat") != 0)
+	else if (strcmp( (filename + strlen(filename) - 4), ".txt") != 0)
 	{
-		printf("File extension not supported! This operation only supports .dat files.\n");
+		printf("File extension not supported! This operation only supports .txt files.\n");
 	}
 	else 
 	{
-		int nTripNo, nId, nDropOff, nEmbarkPoint, nPriority;
+		int nTripNo, nId, nPriority, nDropOff, nEmbarkPoint = 0;
 		String20 firstName, lastName;
+		String50 EmbarkString;
+		String50 DropOffString;
+		// String20 tempString;
 
-		fread(&nTripNo, sizeof(int), 1, fp);
-		fread(&nEmbarkPoint, sizeof(int), 1, fp);
-		fread(firstName, sizeof(String20), 1, fp);
-		fread(lastName, sizeof(String20), 1, fp);
-		fread(&nId, sizeof(int), 1, fp);
-		fread(&nPriority, sizeof(int), 1, fp);
-		fread(&nDropOff, sizeof(int), 1, fp);
+		// Reading information from file 
 
+		fscanf(fp, " Trip Number: %3d", &nTripNo);
+		fscanf(fp, " Embarkation Point: %50[^\n\r]", EmbarkString);
+		nEmbarkPoint = getDropOffPointFromString(EmbarkString);
+		
+		fscanf(fp, " Passenger Name: %20[^,]", lastName);
+		fseek(fp, 1, SEEK_CUR);
+		fscanf(fp, " %s", firstName);
+		fscanf(fp, " ID Number: %d", &nId); 
+		fscanf(fp, " Priority: %d", &nPriority);
+		fscanf(fp, " Drop-Off Point: %50[^\n\r]", DropOffString);
+		nDropOff = getDropOffPointFromString(DropOffString);
+		
 		fclose(fp);
+
+		// TODO: REMOVE PRINT STATEMENT
+
+		printf("%d | %s | %s, %s | %d | %d | %s\n", nTripNo, EmbarkString, lastName, firstName, nId, nPriority, DropOffString);
 				
 		struct Bus *bus = NULL;
 
@@ -1037,13 +1101,13 @@ void loadPassengerFromFile(struct Bus trips[])
 			{
 				printf("Invalid data encountered!!\n");
 				if (!validEmbark)
-					printf("Invalid embarkation point provided. Enter a 5-digit embarkation  code or ensure that the embarkation point provided is on the route of the trip.\n");
+					printf("Invalid embarkation point provided. Please ensure that the embarkation point is spelled properly or that it is on the route of the trip.\n");
 				if (!validId)
 					printf("Invalid ID number provided. Enter either an 8-digit ID number or an ID number of a passenger not currently onboard.\n");
 				if (!validPriority)
 					printf("Invalid priority number provided. Enter a priority number between 1 and 6.\n");
 				if (!validDropOff)
-					printf("Invalid drop-off point provided. Enter a 5-digit drop-off code or ensure that the drop-off point provided is on the route of the trip.\n");
+					printf("Invalid drop-off point provided. Please ensure that the drop-off point is spelled properly or that it is on the route of the trip.\n");
 			}
 			else
 			{
@@ -1075,7 +1139,7 @@ void loadTripFromFile()
 
 	FILE *fp;
 
-	fp = fopen(filename, "rb");
+	fp = fopen(filename, "r");
 
 	if (fp == NULL)
 	{
@@ -1083,45 +1147,30 @@ void loadTripFromFile()
 	}	
 	else if (strlen(filename) < 4) // Protects against seg fault
 	{
-		printf("File extension not supported! This operation only supports .dat files.\n");
+		printf("File extension not supported! This operation only supports .txt files.\n");
 	}
-	else if (strcmp( (filename + strlen(filename) - 4), ".dat") != 0)
+	else if (strcmp( (filename + strlen(filename) - 4), ".txt") != 0)
 	{
-		printf("File extension not supported! This operation only supports .dat files.\n");
+		printf("File extension not supported! This operation only supports .txt files.\n");
 	}
 	else
 	{
-		struct Bus tripsRead[MAX_TRIPS];
-		fread(tripsRead, sizeof(struct Bus), MAX_TRIPS, fp);
-
 		printf("Displaying trip information for %s...\n\n", filename);
+		String100 readLine;
+		int n = 0;
 
-		int i, j;
-		for (i=0; i<MAX_TRIPS; i++)
+		while(fscanf(fp, " %100[^\n]", readLine) > 0)
 		{
-			String50 embarkPointName;
-			getDropOffPointFromCode(tripsRead[i].route[0], embarkPointName);
-
-			for (j=0; j<MAX_PASSENGERS; j++)
+			n++;
+			printf("%s\n", readLine);
+			if (n == 6)
 			{
-				if (tripsRead[i].passengers[j].onboard)
-				{
-					String50 dropOffName;
-					getDropOffPointFromCode(tripsRead[i].passengers[j].dropOff, dropOffName);
-					
-					printf("Trip Number       : %3d\n", tripsRead[i].tripNumber);
-					printf("Embarkation Point : %s\n", embarkPointName);
-					printf("Passenger Name    : %s, %s\n", tripsRead[i].passengers[j].lastName, tripsRead[i].passengers[j].firstName);
-					printf("ID Number         : %d\n", tripsRead[i].passengers[j].id);
-					printf("Priority          : %d\n", tripsRead[i].passengers[j].priority);
-					printf("Drop-Off Point    : %s\n\n", dropOffName);
-				}
+				n = 0;
+				printf("\n");
 			}
-		}
-		printf("(End of File)\n");
+			
+		}		
 	}
-
-	
 
 	pauseAndContinueOnReturn();
 }
