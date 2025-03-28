@@ -335,7 +335,7 @@ setPassenger(struct Passenger *passenger, int priority, String20 firstName, Stri
 void 
 inputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus, int nReserve)
 {
-    int passCount = 0, nIndex = MAX_PASSENGERS, relocated = 0;
+    int passCount = 0, nIndex = MAX_PASSENGERS, relocated = 0, i, j;
 	struct Passenger tempPassenger;
 
     if (bus->tripNumber == -1)
@@ -422,7 +422,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
             	nIndex = 13;
             else
             	nIndex = MAX_PASSENGERS; //Otherwise, it starts at 16.
-            for (int i = 0; i < MAX_PASSENGERS; i++)
+            for (i = 0; i < MAX_PASSENGERS; i++)
             {
                 if (bus->passengers[i].reserved == 0) //Ensures that the passenger who will be getting moved around is not one that reserved.
                 {
@@ -434,7 +434,6 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
                                  tempPassenger.id,
                                  tempPassenger.dropOff,
                                  tempPassenger.reserved);
-                    relocated = 1;
 
                     printf("\nPassenger %s %s has been relocated to seat %d.\n",
                            tempPassenger.lastName, tempPassenger.firstName, i + 1);
@@ -445,7 +444,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
                         struct Passenger *lowestPriorityPassenger = NULL;
                         int lowestPriorityIndex = -1;
 
-                        for (int j = nIndex - 1; j >= 0; j--)
+                        for (j = nIndex - 1; j >= 0; j--)
                         {
                             if (bus->passengers[j].reserved == 0 && 
                                 (lowestPriorityPassenger == NULL || bus->passengers[j].priority > lowestPriorityPassenger->priority))
@@ -484,17 +483,13 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
                         }
                         else
                         {
-                            printf("No available seat for passenger %s %s.\n", replacedPassenger.lastName, replacedPassenger.firstName);
+                            printf("No available seat for passenger %s %s.\n", replacedPassenger.lastName, replacedPassenger.firstName); //Debug to check if the replaced passenger didnt get moved.l
                         }
                     }
                     i = MAX_PASSENGERS;
                 }
             }
 
-            if (!relocated)
-            {
-                printf("\nNo available seat for displaced passenger %s %s.\n", tempPassenger.lastName, tempPassenger.firstName);
-            }
         }
         else
         {
