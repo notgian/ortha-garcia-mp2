@@ -1,1 +1,1 @@
-gcc "main.c" -g -o "main.exe" -std=c99 -Wall  
+gcc "main.c" -o "main.exe" -std=c99 -Wall -lm

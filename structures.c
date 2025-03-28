@@ -64,7 +64,6 @@ initializeBuses(struct Bus trips[22])
 
     for (i=0; i<MAX_TRIPS; i++)
     {   
-        trips[i].ETD = 0;
         trips[i].dispatchable = 1;
 
         trips[i].tripNumber = -1;

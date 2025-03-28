@@ -11,6 +11,31 @@ otherwise plagiarized the work of other students and/or persons.
 
 #include "operations.h"
 
+/* 
+	=============================
+		Misc Helper Functions
+	=============================
+*/
+
+/* stringToInt: Takes a string and returns its equivalent in integer form
+   @param str - string to convert to int
+   @return int - the string in int form
+*/ 
+int stringToInt(String20 str)
+{
+    int i;
+    int n = 0;
+    int length = (int) strlen(str);
+    for (i=0; i < length; i++)
+    {
+        char ch = str[i];
+        int digit = ch - '0';
+        n += digit * pow(10, (length-i-1));
+    }
+
+    return n;
+}
+
 /*
 	====================================
    		Bus and Passenger Operations
@@ -131,7 +156,7 @@ struct Bus
 		displayTripList(trips);
 		printf("Please input a trip number from the list above.\n");
 		
-		scanf("%d", &nTripNumber);
+		scanf(" %d", &nTripNumber);
 
 		if (!isValidTripNumber(nTripNumber))
 			printf("\nInvalid trip number. Please enter a valid trip number.\n\n");
@@ -187,6 +212,55 @@ printDropOffPointFromCode(int code)
 		printf("%-50s", "Gate 2: North Gate (HSSH)");
 	else if (code == 20050) 
 		printf("%-50s", "Gate 1: South Gate (LS Building Entrance)");
+}
+
+void 
+getDropOffPointFromCode(int code, String50 name)
+{
+	if (code == 10010) 
+		strcpy(name, "Mamplasan Toll Exit");
+	else if (code == 10020) 
+		strcpy(name, "Phase 5, San Jose Vilage");
+	else if (code == 10030) 
+		strcpy(name, "Laguna Blvd. Guard House");
+	else if (code == 10040) 
+		strcpy(name, "Milagros Del Rosario Building - East Canopy");
+	else if (code == 20010) 
+		strcpy(name, "Petron Gasoline Station along Gil Puyat Avenue");
+	else if (code == 20020) 
+		strcpy(name, "College of St. Benilde (CSB) along Taft Avenue");
+	else if (code == 20030) 
+		strcpy(name, "Gate 4: Gokongwei Gate");
+	else if (code == 20040) 
+		strcpy(name, "Gate 2: North Gate (HSSH)");
+	else if (code == 20050) 
+		strcpy(name, "Gate 1: South Gate (LS Building Entrance)");
+}
+
+int
+getDropOffPointFromString(String50 string)
+{
+	if (strcmp(string, "Mamplasan Toll Exit") == 0)
+		return 10010;
+	else if (strcmp(string, "Phase 5, San Jose Vilage") == 0)
+		return 10020;
+	else if (strcmp(string, "Laguna Blvd. Guard House") == 0)
+		return 10030;
+	else if (strcmp(string, "Milagros Del Rosario Building - East Canopy") == 0)
+		return 10040;
+
+	else if (strcmp(string, "Petron Gasoline Station along Gil Puyat Avenue") == 0)
+		return 20010;
+	else if (strcmp(string, "College of St. Benilde (CSB) along Taft Avenue") == 0)
+		return 20020;
+	else if (strcmp(string, "Gate 4: Gokongwei Gate") == 0)
+		return 20030;
+	else if (strcmp(string, "Gate 2: North Gate (HSSH)") == 0)
+		return 20040;
+	else if (strcmp(string, "Gate 1: South Gate (LS Building Entrance)") == 0)
+		return 20050;
+	
+	return -1;
 }
 
 /* dropOffInRoute: Returns a value based on whether the specified drop off is in the specified route
@@ -390,7 +464,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 		else if(seatNumber == -1 && nReserve == 1 && bus->nReserveCount < 5)
 		{
 			printf("What seat do you want to occupy?\n");
-			scanf("%d", &seatNumber);
+			scanf(" %d", &seatNumber);
 			setPassenger(&(bus->passengers[seatNumber-1]),
 					priority,
 					firstName,
@@ -896,10 +970,210 @@ searchPassenger(struct Bus trips[])
 // [/] 1 - View Passenger Count
 // [/] 2 - View Drop-Off Count
 // [/] 3 - View Passenger Information
-// [ ] 4 - Load Passenger(Single Passengerpa) 
+// [/] 4 - Load Passenger(Single Passengerpa) 
 // [/] 5 - Search Passenger
 // [ ] 6 - Load Recent Trip File for Viewing
 // [ ] 7 - Back to Main Menu
+
+/* scanPassengerInformation: scans a passengers information from a file into particular variables
+   @param fp            - file pointer of the file to be scanned
+   @param *nTripNo      - pointer to the trip number variable to store the data
+   @param *nEmbarkPoint - pointer to the embark point variable to store the data
+   @param lastName      - last name string to store the data
+   @param firstName     - first name string to store the data
+   @param *nId          - pointer to the id variable to store the data
+   @param *nPriority    - pointer to the priority variable to store the data
+   @param *nDropOff     - pointer to drop-off point varialbe to store the data
+   @return int          - returns the number of successfully scanned parameters
+*/
+int scanPassengerInformation(FILE *fp, int *nTripNo, int *nEmbarkPoint, String20 lastName, String20 firstName, int *nId, int *nPriority, int *nDropOff)
+{
+	/*
+		Format for scanning passenger information:
+		<trip number>
+		<embarkation point>
+		<passenger first name>, <passenger last name>
+		<id number>
+		<priority number>
+		<drop-off point>
+	*/
+	int k = 0;
+
+	k += fscanf(fp, " %d", nTripNo);
+	k += fscanf(fp, " %d", nEmbarkPoint);
+	k += fscanf(fp, " %[^,],", lastName);
+	k += fscanf(fp, " %s", firstName);
+	k += fscanf(fp, " %d", nId);
+	k += fscanf(fp, " %d", nPriority);
+	k += fscanf(fp, " %d", nDropOff);
+
+	return k;
+}
+
+/* loadPassengerFromFile: loads passenger information from a file and attempts to board them onto a trip
+   @param trips - list of bus trips
+   @return void
+*/
+void loadPassengerFromFile(struct Bus trips[])
+{
+	clearScreen();
+
+	String20 filename;
+	printf("Input the name of the file (max 20 chars. and no spaces):\n");
+	scanf(" %20s", filename);
+
+	FILE *fp = NULL;
+
+
+	fp = fopen(filename, "r");
+
+	if (fp == NULL)
+	{
+		printf("File with the name %s not found!", filename);
+	}
+	else if (strlen(filename) < 4) // Protects against seg fault
+	{
+		printf("File extension not supported! This operation only supports .txt files.\n");
+	}	
+	else if (strcmp( (filename + strlen(filename) - 4), ".txt") != 0)
+	{
+		printf("File extension not supported! This operation only supports .txt files.\n");
+	}
+	else 
+	{
+		int nTripNo, nId, nPriority, nDropOff, nEmbarkPoint = 0;
+		String20 firstName, lastName;
+		String50 EmbarkString;
+		String50 DropOffString;
+		// String20 tempString;
+
+		// Reading information from file 
+
+		fscanf(fp, " Trip Number: %3d", &nTripNo);
+		fscanf(fp, " Embarkation Point: %50[^\n\r]", EmbarkString);
+		nEmbarkPoint = getDropOffPointFromString(EmbarkString);
+		
+		fscanf(fp, " Passenger Name: %20[^,]", lastName);
+		fseek(fp, 1, SEEK_CUR);
+		fscanf(fp, " %s", firstName);
+		fscanf(fp, " ID Number: %d", &nId); 
+		fscanf(fp, " Priority: %d", &nPriority);
+		fscanf(fp, " Drop-Off Point: %50[^\n\r]", DropOffString);
+		nDropOff = getDropOffPointFromString(DropOffString);
+		
+		fclose(fp);
+
+		// TODO: REMOVE PRINT STATEMENT
+
+		printf("%d | %s | %s, %s | %d | %d | %s\n", nTripNo, EmbarkString, lastName, firstName, nId, nPriority, DropOffString);
+				
+		struct Bus *bus = NULL;
+
+		if (!isValidTripNumber(nTripNo))
+		{
+			printf("Trip number provided is not valid! Aborting operation...\n");
+		}
+		else
+		{
+			bus = getBusFromTripNumber(trips, MAX_TRIPS, nTripNo);
+
+			int validEmbark = 0;
+			int validId = 0;
+			int validPriority = 0;
+			int validDropOff = 0;
+
+			int i;
+			for (i=0; i<MAX_ROUTE_LENGTH; i++)
+			{
+				if(nEmbarkPoint == bus->route[i])
+					validEmbark = 1;
+				if(nDropOff == bus->route[i])
+					validDropOff = 1;
+			}
+
+			if (nId >= 10000000 && nId <= 99999999 && !searchPassengerId(trips, nId))
+				validId = 1;
+
+			if (nPriority >= 1 && nPriority <= 6)
+				validPriority = 1;
+
+			if (!validEmbark || !validId || !validPriority || !validDropOff)
+			{
+				printf("Invalid data encountered!!\n");
+				if (!validEmbark)
+					printf("Invalid embarkation point provided. Please ensure that the embarkation point is spelled properly or that it is on the route of the trip.\n");
+				if (!validId)
+					printf("Invalid ID number provided. Enter either an 8-digit ID number or an ID number of a passenger not currently onboard.\n");
+				if (!validPriority)
+					printf("Invalid priority number provided. Enter a priority number between 1 and 6.\n");
+				if (!validDropOff)
+					printf("Invalid drop-off point provided. Please ensure that the drop-off point is spelled properly or that it is on the route of the trip.\n");
+			}
+			else
+			{
+				printf("Information scanned successfully!\n");
+				printf("Inputting passenger...\n");
+				
+				inputPassenger(nPriority,
+							firstName,
+							lastName,
+							nId,
+							nDropOff,
+							-1,
+							bus,
+							0);	
+			}
+		}
+	}
+
+	pauseAndContinueOnReturn();
+}
+
+void loadTripFromFile()
+{
+	clearScreen();
+
+	String20 filename;
+	printf("Input the name of the file (max 20 chars. and no spaces):\n");
+	scanf(" %20s", filename);
+
+	FILE *fp;
+
+	fp = fopen(filename, "r");
+
+	if (fp == NULL)
+	{
+		printf("File with the name %s not found!", filename);
+	}	
+	else if (strlen(filename) < 4) // Protects against seg fault
+	{
+		printf("File extension not supported! This operation only supports .txt files.\n");
+	}
+	else if (strcmp( (filename + strlen(filename) - 4), ".txt") != 0)
+	{
+		printf("File extension not supported! This operation only supports .txt files.\n");
+	}
+	else
+	{
+		printf("Displaying trip information for %s...\n\n", filename);
+		String100 readLine;
+		int n = 0;
+
+		while(fscanf(fp, " %100[^\n]", readLine) > 0)
+		{
+			n++;
+			printf("%s\n", readLine);
+			if (n == 6)
+			{
+				n = 0;
+				printf("\n");
+			}
+			
+		}		
+	}
+
+	pauseAndContinueOnReturn();
+}
 
 /* 
 	======================
@@ -1022,6 +1296,7 @@ arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 	}
 	else if (selection == '4')
 	{
+		loadPassengerFromFile(trips);
 		screenState = 320;
 	}
 	else if (selection == '5')
@@ -1031,6 +1306,7 @@ arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 	}
 	else if (selection == '6')
 	{
+		loadTripFromFile();
 		screenState = 320;
 	}
 	else if (selection == '7')

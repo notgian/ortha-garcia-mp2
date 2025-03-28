@@ -3,6 +3,8 @@
 
 #include "structures.h"
 
+int stringToInt(String20 str);
+
 /*
     ====================================
         Bus and Passenger Operations
@@ -62,6 +64,10 @@ void viewDropOffCount(struct Bus trips[]);
 void viewPassengerInformation(struct Bus trips[]);
 
 void searchPassenger(struct Bus trips[]);
+
+int scanPassengerInformation(FILE *fp, int *nTripNo, int *nEmbarkPoint, String20 lastName, String20 firstName, int *nId, int *nPriority, int *nDropOff);
+
+void loadPassengerFromFile(struct Bus trips[]);
 
 /* 
 	======================
