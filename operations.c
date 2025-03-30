@@ -591,7 +591,9 @@ encodePassengerInformation(struct Bus trips[])
 
 	int validInput = 0;
 	int seat = -1;
-
+	
+	nReserve = 0;
+	
 	printf("ID Number:\n");
 	while(!validInput)
 	{
