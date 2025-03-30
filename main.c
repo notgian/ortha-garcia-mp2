@@ -1,3 +1,10 @@
+/*********************************************************************************************************
+This is to certify that this project is our own work, based on our combined personal efforts in studying and applying the concepts
+learned. We have constructed the functions and their respective algorithms and corresponding code by ourselves. The
+program was run, tested, and debugged by our own efforts. We further certify that we have not copied in part or whole or
+otherwise plagiarized the work of other students and/or persons.
+<Theon Schuyler S. Garcia>, DLSU ID# <12409537>, <Gian Lorenzo C. Ortha>, DLSU ID# <12414697>
+*********************************************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -10,6 +17,7 @@ int main()
     struct Bus trips[22];
     initializeBuses(trips);
 
+	int i, j;
 	int screenState = 100;
     int nFullA = 0;
     int nFullB = 0;
@@ -69,6 +77,7 @@ int main()
             strcpy(MMstr, dateStr+3);
             strcpy(YYYYstr, dateStr+6);
             
+            //So that the inputted date values in the string can be validated against integers.
             day = stringToInt(DDstr);
             month = stringToInt(MMstr);
             year = stringToInt(YYYYstr);
@@ -125,7 +134,6 @@ int main()
 
     printf("Saving trip information for %02d-%02d-%4d...\n", day, month, year);
 
-    int i, j;
     FILE *fp;
     String20 filenamePrefix = "";
     strcat(filenamePrefix, DDstr);
