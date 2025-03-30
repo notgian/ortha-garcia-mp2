@@ -392,7 +392,6 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 					if ( (bus->passengers[i].reserved != 1 && (bus->passengers[i].priority > priority || nReserve) ) &&
 						(bus->passengers[i].priority > tempPassenger->priority))
 					{
-						printf("DEBUG: Lower priority passenger found! \n");
 						tempPassenger = &(bus->passengers[i]);
 						seatTaken = i+1;
 					}
@@ -538,14 +537,10 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 									displacedPassenger->reserved);
 				}
 				else
-				{
 					printf("Higher or equal priority passenger is already occupying that seat. Please pick a different seat and try again.\n");
-				}
 			}
 		}
 	}
-
-	
 }
 
 /* searchPassengerId: Takes the list of trips and searches for a specified id among the passengers in all trips
@@ -610,32 +605,11 @@ encodePassengerInformation(struct Bus trips[])
 			validInput = 1;
 	}
 
-	validInput = 0;
 	printf("First Name (NOTE: DO NOT INCLUDE ANY SPACES):\n");
-	while(!validInput)
-	{
-		scanf(" %s", firstName); // TODO: Fix this and for last name too
-		if (strcmp(firstName, "(NOTE -- DO NOT INCLUDE ANY SPACES. USE UNDERSCORE OR HYPHEN)") == 0)
-		{
-			printf("\nNo first name found! Please input a valid string!\n");
-		}
-		else
-			validInput = 1;
-	}
-
-	validInput = 0;
-	while(!validInput)
-	{
-		printf("Last Name: (NOTE: DO NOT INCLUDE ANY SPACES):\n");
-		scanf(" %s", lastName);
-
-		if (strcmp(firstName, "") == 0)
-		{
-			printf("\nNo last name found! Plase input a valid string!\n");
-		}
-		else
-			validInput = 1;
-	}
+	scanf(" %s", firstName);
+	
+	printf("Last Name: (NOTE: DO NOT INCLUDE ANY SPACES):\n");
+	scanf(" %s", lastName);
 	
 	validInput = 0;
 	while(!validInput)
@@ -852,18 +826,6 @@ displayPassengerCount(struct Bus bus)
 				printf("+-----+-----+\n");
 			}
 		}		
-	
-	// TODO: Remove this before submission
-	printf("FOR DEBUGGING PURPOSES!\n");
-	printf("Passenger List\n");
-	int x;
-	for (x=0; x<MAX_PASSENGERS; x++)
-	{
-		if (bus.passengers[x].onboard)
-		{
-			printf("%s, %s; ID: %d; Drop off %d; Priority: %d\n", bus.passengers[x].lastName, bus.passengers[x].firstName, bus.passengers[x].id, bus.passengers[x].dropOff, bus.passengers[x].priority);
-		}
-	}
 }
 
 /* viewPassengerCount: Asks the user for a trip number and views the passenger count for the corresponding trip number
@@ -1022,13 +984,6 @@ searchPassenger(struct Bus trips[])
 	
 	pauseAndContinueOnReturn();
 }
-// [/] 1 - View Passenger Count
-// [/] 2 - View Drop-Off Count
-// [/] 3 - View Passenger Information
-// [/] 4 - Load Passenger(Single Passengerpa) 
-// [/] 5 - Search Passenger
-// [ ] 6 - Load Recent Trip File for Viewing
-// [ ] 7 - Back to Main Menu
 
 /* scanPassengerInformation: scans a passengers information from a file into particular variables
    @param fp            - file pointer of the file to be scanned
@@ -1118,10 +1073,6 @@ void loadPassengerFromFile(struct Bus trips[])
 		
 		fclose(fp);
 
-		// TODO: REMOVE PRINT STATEMENT
-
-		printf("%d | %s | %s, %s | %d | %d | %s\n", nTripNo, EmbarkString, lastName, firstName, nId, nPriority, DropOffString);
-				
 		struct Bus *bus = NULL;
 
 		if (!isValidTripNumber(nTripNo))
