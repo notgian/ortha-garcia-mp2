@@ -366,7 +366,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
         printf("\n");
     }
 
-    if (isTripFull(*bus) && nReserve != 1)
+    if (isTripFull(*bus) && nReserve != 1) //If the bus is full and the new passenger did not reserve.
     {
         // Check for the lowest priority passenger who is not reserved
         struct Passenger *lastLowestPriorityPassenger = NULL;
@@ -381,7 +381,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
             }
         }
 
-        if (lastLowestPriorityPassenger == NULL)
+        if (lastLowestPriorityPassenger == NULL) //If no passenger has a lower priority than the passenger who wishes to board.
         {
             printf("Sorry, passenger %s %s this trip (AE%d) cannot accommodate you.\n", firstName, lastName, bus->tripNumber);
         }
@@ -430,7 +430,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
     }
     else
     {
-        if (seatNumber == -1 && nReserve != 1) // Automatic seat assignment
+        if (seatNumber == -1 && nReserve != 1) // Automatic seat assignment assuming there are blank seats
         {
             for (i = 0; i < MAX_PASSENGERS; i++)
             {
@@ -456,17 +456,26 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
         }
         else if (seatNumber == -1 && nReserve == 1 && bus->nReserveCount < 5) // Reserved passenger selects a seat
         {
-        	while(seatNumber > 16 || seatNumber <= 0)
+        	int maxInput = 16;	//This variable can be used for the seat loop and for any future linear searches involving passengers.
+        	if(getPassengerCount(*bus) < 13) //Ensures that the passenger doesn't accidentally get put into the 16th seat before the bus seating is extended.
+        		maxInput = 13;
+        	else			//If there are 13 passengers, allows for the displaced passenger be put into the 14th, 15th, or 16th seat if needed.
+        		maxInput = 16;
+        		
+        	while(seatNumber > maxInput  || seatNumber <= 0)
         	{
-            printf("What seat do you want to occupy?\n");
-            scanf(" %d", &seatNumber);
+	            printf("What seat do you want to occupy?\n");
+	            scanf(" %d", &seatNumber);
+				
+				if(seatNumber > maxInput || seatNumber <= 0)
+					printf("Input a valid seat from 1 - %d.\n", maxInput);
             }
             
-            if (bus->passengers[seatNumber - 1].onboard)
+            if (bus->passengers[seatNumber - 1].onboard) //Checks if the seat chosen is taken.
             {
-                if (bus->passengers[seatNumber - 1].reserved == 1)
+                if (bus->passengers[seatNumber - 1].reserved == 1)  //Checks first if the passenger in the chosen seat is reserved or not.
                 {
-                	if(bus->passengers[seatNumber - 1].priority > priority)
+                	if(bus->passengers[seatNumber - 1].priority > priority) //This executes when the passenger assigned to the seat has lower priority.
 					{
 						displacedPassenger = bus->passengers[seatNumber - 1];	
 						setPassenger(&(bus->passengers[seatNumber - 1]),
@@ -484,20 +493,21 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 	                    printf("   Seat Number : %d\n", seatNumber);
 	                    printf("   Trip Number : AE-%d\n", bus->tripNumber);
 	                    
-	                    // Find the lowest priority passenger to displace
+	                    // Find the lowest priority passenger to displace in place of the reserve passenger who lost their seat.
 	                    lowestPriorityIndex = -1;
 	                    referencePriority = 0; // Priority ranges from 1 to 6
-	                    for (i = MAX_PASSENGERS - 1; i >= 0; i--) 
+	                    for (i = maxInput - 1; i >= 0; i--) 
 	                    {
-	                        if (bus->passengers[i].priority > referencePriority && bus->passengers[i].reserved != 1)
+	                        if (bus->passengers[i].priority > referencePriority && bus->passengers[i].reserved != 1) // Look for the lowest priority that isn't reserved.
 	                        {
 	                            referencePriority = bus->passengers[i].priority;
 	                            lowestPriorityIndex = i;
 	                        }
 	                    }
-	                    if (bus->passengers[lowestPriorityIndex].priority > displacedPassenger.priority || displacedPassenger.reserved == 1)
+	                    //If lowestpriority passenger has lower priority than the removed passenger or the displaced passenger reserved.
+	                    if (bus->passengers[lowestPriorityIndex].priority > displacedPassenger.priority || displacedPassenger.reserved == 1) 
 	                    	{
-		                        lowestPriorityPassenger = bus->passengers[lowestPriorityIndex];
+		                        lowestPriorityPassenger = bus->passengers[lowestPriorityIndex]; //Copy the lowest priority passenger to its own temporary structure.
 		                        bus->passengers[lowestPriorityIndex].onboard = 0; // Remove the lowest priority passenger
 		                        bus->passengers[lowestPriorityIndex] = displacedPassenger;
 								printf("Passenger %s %s has been relocated to seat %d.\n", displacedPassenger.firstName,displacedPassenger.lastName, lowestPriorityIndex + 1);
@@ -505,7 +515,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 								{
 			                        printf("\nPassenger %s %s has been displaced and will be moved to the next trip.\n",
 			                               lowestPriorityPassenger.firstName, lowestPriorityPassenger.lastName);
-			
+
 			                        inputPassenger(
 			                            lowestPriorityPassenger.priority,
 			                            lowestPriorityPassenger.firstName,
@@ -518,13 +528,13 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 		                        }
 	                    	}	
 					}
-					else
+					else //Executes if the passenger selects a seat that is taken by someone with higher or equal priority.
 					{
 						printf("Sorry, the seat is already occupied by a passenger with higher or equal priority.\n");
                     	bus->nReserveCount--;	
 					}
                 }
-                else if (priority < bus->passengers[seatNumber - 1].priority)
+                else if (priority < bus->passengers[seatNumber - 1].priority) //Code for displacing passengers who aren't reserved when a reserving passenger selects their seat.
                 {
                     displacedPassenger = bus->passengers[seatNumber - 1];
                     setPassenger(&(bus->passengers[seatNumber - 1]),
@@ -545,7 +555,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
                     // Find the lowest priority passenger to displace
                     lowestPriorityIndex = -1;
                     referencePriority = 0; // Priority ranges from 1 to 6
-                    for (i = MAX_PASSENGERS - 1; i >= 0; i--) 
+                    for (i = maxInput - 1; i >= 0; i--) 
                     {
                         if (bus->passengers[i].priority > referencePriority && bus->passengers[i].reserved != 1)
                         {
@@ -577,7 +587,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 	                            lowestPriorityPassenger.reserved);
 						}
                     }
-                    else
+                    else //If no one of lower priority is found, the displaced passenger is the one who gets moved to the next trip.
                     {
                     	lowestPriorityPassenger = displacedPassenger;
                     	printf("\nPassenger %s %s has been displaced and will be moved to the next trip.\n",
@@ -594,13 +604,13 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
                             lowestPriorityPassenger.reserved);
 					}
                 }
-                else
+                else //If the reserving passenger selects a seat with someone higher or equal priority to them.
                 {
                     printf("Sorry, the seat is already occupied by a passenger with higher or equal priority.\n");
                     bus->nReserveCount--;
                 }
             }
-            else
+            else //If the reserving passenger selects a blank seat.
             {
                 setPassenger(&(bus->passengers[seatNumber - 1]),
                              priority,
@@ -618,23 +628,23 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
                 printf("   Trip Number : AE-%d\n", bus->tripNumber);
             }
         }
-        else
-        {
-            setPassenger(&(bus->passengers[seatNumber - 1]),
-                         priority,
-                         firstName,
-                         lastName,
-                         id,
-                         dropOffPoint,
-                         nReserve);
-
-            printf("\nPassenger Input Successfully!\n");
-            printf("   Name        : %s, %s\n", lastName, firstName);
-            printf("   ID Number   : %d\n", id);
-            printf("   Priority    : %d\n", priority);
-            printf("   Seat Number : %d\n", seatNumber);
-            printf("   Trip Number : AE-%d\n", bus->tripNumber);
-        }
+//        else 
+//        {
+//            setPassenger(&(bus->passengers[seatNumber - 1]),
+//                         priority,
+//                         firstName,
+//                         lastName,
+//                         id,
+//                         dropOffPoint,
+//                         nReserve);
+//
+//            printf("\nPassenger Input Successfully!\n");
+//            printf("   Name        : %s, %s\n", lastName, firstName);
+//            printf("   ID Number   : %d\n", id);
+//            printf("   Priority    : %d\n", priority);
+//            printf("   Seat Number : %d\n", seatNumber);
+//            printf("   Trip Number : AE-%d\n", bus->tripNumber);
+//        }
     }
 }
 
@@ -933,7 +943,9 @@ displayPassengerCount(struct Bus bus)
 				printf("|  %1c  |  D  |\n", seat);
 				printf("+-----+-----+\n");
 			}
-		}		
+		}
+				
+	printf("Passenger Count: %d\n", getPassengerCount(bus));
 	
 	// TODO: Remove this before submission
 	printf("FOR DEBUGGING PURPOSES!\n");
