@@ -1,9 +1,9 @@
 /*********************************************************************************************************
-This is to certify that this project is my own work, based on my personal efforts in studying and applying the concepts
-learned. I have constructed the functions and their respective algorithms and corresponding code by myself. The
-program was run, tested, and debugged by my own efforts. I further certify that I have not copied in part or whole or
+This is to certify that this project is our own work, based on our combined personal efforts in studying and applying the concepts
+learned. We have constructed the functions and their respective algorithms and corresponding code by ourselves. The
+program was run, tested, and debugged by our own efforts. We further certify that we have not copied in part or whole or
 otherwise plagiarized the work of other students and/or persons.
-<Theon Schuyler S. Garcia>, DLSU ID# <12409537> , 
+<Theon Schuyler S. Garcia>, DLSU ID# <12409537>, <Gian Lorenzo C. Ortha>, DLSU ID# <12414697>
 *********************************************************************************************************/
 
 #include <stdio.h>
@@ -84,7 +84,7 @@ isTripFull(struct Bus bus)
     else return 0;
 }
 
-/* getBusFromTripNumber: Returns the pointer of a particular bus with a corresponding trip number
+/* getBusFromTripNumber: Returns the pointer of a particular bus with a corresponding trip number.
    @param trips      - list of bus trips
    @param n          - number of total trips; only used for the loop
    @param tripNumber - trip number of the desired bus
@@ -376,7 +376,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 		{
 			int seatTaken;
 
-			if (nReserve && seatNumber != -1) // Pasenger is reserving and seat is specified
+			if (nReserve && seatNumber != -1) // Passenger is reserving and seat is specified
 			{
 				if (bus->passengers[seatNumber-1].priority > priority)
 				{
@@ -537,7 +537,10 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 									displacedPassenger->reserved);
 				}
 				else
+				{
 					printf("Higher or equal priority passenger is already occupying that seat. Please pick a different seat and try again.\n");
+					bus->nReserveCount--;
+				}
 			}
 		}
 	}
@@ -696,6 +699,8 @@ encodePassengerInformation(struct Bus trips[])
 
 /* getBusFull: sets two integers to the fullness of their corresponding trips
    @param trips - list of bus trips
+   @param *nFullA - Represents whether or not Manila-Laguna are all full.
+   @param *nFullB - Represents whether or not Laguna-Manila are all full.
    @return void
 */ 
 void getBusFull(struct Bus trips[], int *nFullA, int *nFullB)
@@ -714,14 +719,14 @@ void getBusFull(struct Bus trips[], int *nFullA, int *nFullB)
 				counterB++;
 		}
 	}
-
+	//Checks if trips 101 -> 109 are full and enables the special trip if yes.
 	if (counterA >= MAX_TRIPS_MANILA-1 && !*nFullA)
 	{
 		*nFullA = 1;
 		trips[MAX_TRIPS_MANILA-1].dispatchable = 1;
 		trips[MAX_TRIPS_MANILA-2].next = &trips[MAX_TRIPS_MANILA-1];
 	}
-
+	//Checks if trips 150 -> 160 are full and enables the special trip if yes.
 	if (counterB >= MAX_TRIPS_LAGUNA-1 && !*nFullB)
 	{
 		*nFullB = 1;
@@ -749,37 +754,7 @@ displayPassengerCount(struct Bus bus)
 	n = 0;
 	int nPassengerCount = getPassengerCount(bus);
 	
-	if(nPassengerCount <= 13)
-		for(nRow = 0; nRow < 5; nRow++)
-		{
-			if(nRow < 4)
-			{
-				printf("+-----+-----+-----+\n");
-				for(nColumn = 0; nColumn < 3; nColumn++)
-				{
-					char seat = 'O';
-					if (bus.passengers[n].onboard) seat = 'X';
-					
-					printf("|  %1c  ", seat);
-					n++;
-				}
-				printf("|");
-				printf("\n");
-				printf("+-----+-----+-----+\n");
-			}
-			
-			else
-			{
-				char seat = 'O';
-				if (bus.passengers[n].onboard) seat = 'X';
-
-				printf("+-----+-----+\n");
-				printf("|  %1c  |  D  |\n", seat);
-				printf("+-----+-----+\n");
-			}
-		}
-
-	else
+	if(nPassengerCount > 13 || bus.tripNumber == 110 || bus.tripNumber == 161)
 		for(nRow = 0; nRow < 5; nRow++)
 		{
 			if(nRow < 3)
@@ -825,7 +800,38 @@ displayPassengerCount(struct Bus bus)
 				printf("|  %1c  |  D  |\n", seat);
 				printf("+-----+-----+\n");
 			}
-		}		
+		}
+
+	else
+		for(nRow = 0; nRow < 5; nRow++)
+		{
+			if(nRow < 4)
+			{
+				printf("+-----+-----+-----+\n");
+				for(nColumn = 0; nColumn < 3; nColumn++)
+				{
+					char seat = 'O';
+					if (bus.passengers[n].onboard) seat = 'X';
+					
+					printf("|  %1c  ", seat);
+					n++;
+				}
+				printf("|");
+				printf("\n");
+				printf("+-----+-----+-----+\n");
+			}
+			
+			else
+			{
+				char seat = 'O';
+				if (bus.passengers[n].onboard) seat = 'X';
+
+				printf("+-----+-----+\n");
+				printf("|  %1c  |  D  |\n", seat);
+				printf("+-----+-----+\n");
+			}
+		}
+	printf("Passenger Count: %d\n", getPassengerCount(bus));		
 }
 
 /* viewPassengerCount: Asks the user for a trip number and views the passenger count for the corresponding trip number
@@ -1224,6 +1230,8 @@ mainMenu()
 
 /* passengerMenu displays the displays the different menu options for a passenger
    @param trips - list of bus trips for processing
+   @param *nFullA - Represents whether or not Manila-Laguna are all full.
+   @param *nFullB - Represents whether or not Laguna-Manila are all full.
    @return int - returns the screenstate for the following iteration of the mainloop
 */
 int 
@@ -1261,6 +1269,8 @@ passengerMenu(struct Bus trips[], int *nFullA, int *nFullB)
 
 /* arrowsPersonnelMenu displays the displays the different menu options for a passenger
    @param trips - list of bus trips for processing
+   @param *nFullA - Represents whether or not Manila-Laguna are all full.
+   @param *nFullB - Represents whether or not Laguna-Manila are all full.
    @return int - returns the screenstate for the following iteration of the mainloop
 */
 int 
