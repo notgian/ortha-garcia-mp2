@@ -419,9 +419,11 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 			// Checks for displaced passenger
 			if (displacedPassenger->id == -1) // No passengers could be displaced
 			{
-				if (nReserve && seatNumber != -1) // Happens if the seat chosen is already occupied by a reserved passenger with a higher priority 
+				if (nReserve && seatNumber != -1) // Happens if the seat chosen is already occupied by a reserved passenger with a higher priority
+				{
 					printf("Cannot board! The seat %d is already being occupied by a higher-priority passenger who has reserved that seat. Please try again and pick a different seat. Aborting the boarding of %s %s\n", seatNumber, firstName, lastName);
-
+					bus->nReserveCount--;
+				}
 				else // Board on next trip
 				{
 					printf("There are no more available seats for passenger %s %s in bus AE-%d. Attempting to board them on the next trip.\n", firstName, lastName, bus->tripNumber);
@@ -649,7 +651,7 @@ encodePassengerInformation(struct Bus trips[])
 		{
 			int maxSeat = 13 + (getPassengerCount(*bus) >= 13) * 3;
 
-			while( (seat < 0) || (seat > maxSeat) )
+			while( (seat < 1) || (seat > maxSeat) )
 			{
 				printf("Please input a seat number from 1 to %d:\n", maxSeat);
 				scanf(" %d", &seat);
