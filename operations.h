@@ -1,3 +1,10 @@
+/*********************************************************************************************************
+This is to certify that this project is our own work, based on our combined personal efforts in studying and applying the concepts
+learned. We have constructed the functions and their respective algorithms and corresponding code by ourselves. The
+program was run, tested, and debugged by our own efforts. We further certify that we have not copied in part or whole or
+otherwise plagiarized the work of other students and/or persons.
+<Theon Schuyler S. Garcia>, DLSU ID# <12409537>, <Gian Lorenzo C. Ortha>, DLSU ID# <12414697>
+*********************************************************************************************************/
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
 
