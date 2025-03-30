@@ -17,11 +17,11 @@ int main()
     // TODO: Remove since this was only for debugging
     int i, j;
 
-    for (i=0; i<MAX_TRIPS_MANILA-2; i++)
+    for (i=1; i<MAX_TRIPS_MANILA-2; i++)
     {
         for (j=0; j<MAX_PASSENGERS; j++)
         {
-            inputPassenger(6, john, doe, 12313412, 10010, -1, &trips[i], 0);
+            inputPassenger(5, john, doe, 12313412, 10040, -1, &trips[i], 0);
         }
     }
 
@@ -29,18 +29,18 @@ int main()
     {
         for (j=0; j<MAX_PASSENGERS; j++)
         {
-            inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[i], 0);
+            inputPassenger(5, john, doe, 12313412, 20050, -1, &trips[i], 0);
         }
     }
 
     for (j=1; j<MAX_PASSENGERS; j++)
     {
-        inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS-1], 0);
+        inputPassenger(5, john, doe, 12313412, 10040, -1, &trips[MAX_TRIPS-1], 0);
     }
 
     for (j=1; j<MAX_PASSENGERS; j++)
     {
-        inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS_MANILA-2], 0);
+        inputPassenger(5, john, doe, 12313412, 20050, -1, &trips[MAX_TRIPS_MANILA-2], 0);
     }
 
 	int screenState = 100;
