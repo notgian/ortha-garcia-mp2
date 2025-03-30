@@ -1,3 +1,10 @@
+/*********************************************************************************************************
+This is to certify that this project is our own work, based on our combined personal efforts in studying and applying the concepts
+learned. We have constructed the functions and their respective algorithms and corresponding code by ourselves. The
+program was run, tested, and debugged by our own efforts. We further certify that we have not copied in part or whole or
+otherwise plagiarized the work of other students and/or persons.
+<Theon Schuyler S. Garcia>, DLSU ID# <12409537>, <Gian Lorenzo C. Ortha>, DLSU ID# <12414697>
+*********************************************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -8,41 +15,9 @@
 int main()
 {
     struct Bus trips[22];
-
-    String20 john = "john";
-    String20 doe = "doe";
-
     initializeBuses(trips);
 
-    // TODO: Remove since this was only for debugging
-    int i, j;
-
-    for (i=0; i<MAX_TRIPS_MANILA-2; i++)
-    {
-        for (j=0; j<MAX_PASSENGERS; j++)
-        {
-            inputPassenger(6, john, doe, 12313412, 10010, -1, &trips[i], 0);
-        }
-    }
-
-    for (i=MAX_TRIPS_MANILA; i<MAX_TRIPS-2; i++)
-    {
-        for (j=0; j<MAX_PASSENGERS; j++)
-        {
-            inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[i], 0);
-        }
-    }
-
-    for (j=1; j<MAX_PASSENGERS; j++)
-    {
-        inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS-1], 0);
-    }
-
-    for (j=1; j<MAX_PASSENGERS; j++)
-    {
-        inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS_MANILA-2], 0);
-    }
-
+	int i, j;
 	int screenState = 100;
     int nFullA = 0;
     int nFullB = 0;
@@ -50,7 +25,6 @@ int main()
 	while (screenState > 0)
 	{
 		int parentMenu = screenState - screenState % 100;
-		// int subMenu = screenState % 100;
 
 		if (parentMenu == 100) // Selected menu is main menu
 			screenState = mainMenu();
@@ -65,7 +39,7 @@ int main()
 		}
 	}
 
-	// TODO: Include logic here for closing up the program.
+	// Closing up the program
     clearScreen();
     
     printf("Saving trip information before closing the program...\n");
@@ -73,10 +47,13 @@ int main()
     int validInput = 0;
     int day, month, year;
     String20 dateStr;
+    String20 DDstr;
+    String20 MMstr;
+    String20 YYYYstr;
     while (!validInput)
     {
         printf("Please enter the date in this following format (pad zeroes if necessary for day and month): dd-mm-yyyy\n");
-        scanf("%20s", dateStr);
+        scanf("%10s", dateStr);
 
         // Validate String Format
         int validStringFormat = 1;
@@ -85,25 +62,25 @@ int main()
             int i; // Validating that numbers are in the right place
             for (i=0; i<10; i++)
             {
-                if (i != 2 && i != 5 && (dateStr[i] < '0' || dateStr[i] > '9')) // exclude the hyphens
+                if (i != 2 && i != 5 && (dateStr[i] < '0' || dateStr[i] > '9'))
                 {
                     validStringFormat = 0;
                 }
+                if (dateStr[i] == '-')
+                    dateStr[i] = '\0';
             }
         }
         
         if (validStringFormat)
         {
-            String20 DDstr = {dateStr[0], dateStr[1], '\0'};
-            String20 MMstr = {dateStr[3], dateStr[4], '\0'};;
-            String20 YYYYstr = {dateStr[6], dateStr[7], dateStr[8], dateStr[9], '\0'};
-
+            strcpy(DDstr, dateStr);
+            strcpy(MMstr, dateStr+3);
+            strcpy(YYYYstr, dateStr+6);
+            
+            //So that the inputted date values in the string can be validated against integers.
             day = stringToInt(DDstr);
             month = stringToInt(MMstr);
             year = stringToInt(YYYYstr);
-
-            printf("%s-%s-%s\n", DDstr, MMstr, YYYYstr);
-            printf("%d-%d-%d\n", day, month, year);
         
             int validDay = 0;
             int validMonth = 0;
@@ -157,10 +134,13 @@ int main()
 
     printf("Saving trip information for %02d-%02d-%4d...\n", day, month, year);
 
-    // int i, j;
     FILE *fp;
-    String20 filenamePrefix;
-    sprintf(filenamePrefix, "%02d-%02d-%4d", day, month, year); // TODO: ask sir if this is allowed
+    String20 filenamePrefix = "";
+    strcat(filenamePrefix, DDstr);
+    strcat(filenamePrefix, "-");
+    strcat(filenamePrefix, MMstr);
+    strcat(filenamePrefix, "-");
+    strcat(filenamePrefix, YYYYstr);
 
     String20 fileNameTxt;
 

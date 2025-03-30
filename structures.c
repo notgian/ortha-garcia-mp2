@@ -1,3 +1,10 @@
+/*********************************************************************************************************
+This is to certify that this project is our own work, based on our combined personal efforts in studying and applying the concepts
+learned. We have constructed the functions and their respective algorithms and corresponding code by ourselves. The
+program was run, tested, and debugged by our own efforts. We further certify that we have not copied in part or whole or
+otherwise plagiarized the work of other students and/or persons.
+<Theon Schuyler S. Garcia>, DLSU ID# <12409537>, <Gian Lorenzo C. Ortha>, DLSU ID# <12414697>
+*********************************************************************************************************/
 #include <stdio.h>
 #include <string.h>
 
@@ -19,10 +26,11 @@ createEmptyPassenger()
     return emptyPassenger;
 }
 
-/* setEmptyPassenger: Takes an array of passengers and sets them all to empty
+/* setEmptyPassengers: Takes an array of passengers and sets them all to empty
    @param *passengerList - array of passengers 
    @param n - number of passengers to set
    @return void
+   Pre-condition: n is less than the size of the passengerList
 */ 
 void 
 setEmptyPassengers(struct Passenger *passengerList, int n)
@@ -34,22 +42,12 @@ setEmptyPassengers(struct Passenger *passengerList, int n)
     }
 }
 
-/* setEmptyPassenger: Takes an array of passengers and sets passenger at index n to empty   
-   @param *passengerList - array of passengers 
-   @param n - index of passenger to set to empty
-   @return void
-*/ 
-void 
-setEmptyPassenger(struct Passenger *passengerList, int n)
-{
-    passengerList[n] = createEmptyPassenger();
-}
-
 /* initializeBuses: Takes an two arrays of Bus with size 10 and 12 respectively for Manila and Laguna trips. Initializes the values for all buses. 
                     NOTE - Contents of arrays do not matter, only size. They contents will be set by this function.
    @param busesManilaToLaguna - array of buses, size 10  
    @param busesLagunaToManila - index of buses, size 12
    @return void
+   Pre-condition: the trips array has a size of 22
 */ 
 void 
 initializeBuses(struct Bus trips[22])
@@ -57,8 +55,8 @@ initializeBuses(struct Bus trips[22])
     int i;
     for (i=0; i<MAX_TRIPS; i++)
     {
-        struct Bus busInst;
-        busInst.next = NULL;
+        struct Bus busInst; 
+        busInst.next = NULL; //This is an initialization of each bus' next. Safeguard against segmentation fault.
         trips[i] = busInst;
     }
 
@@ -66,7 +64,7 @@ initializeBuses(struct Bus trips[22])
     {   
         trips[i].dispatchable = 1;
 
-        trips[i].tripNumber = -1;
+        trips[i].tripNumber = -1; 
         trips[i].nReserveCount = 0;
         setEmptyPassengers(trips[i].passengers, MAX_PASSENGERS);
 
@@ -78,8 +76,8 @@ initializeBuses(struct Bus trips[22])
         
     }
 
-    int initialTripNo_A = 101;
-    int initialTripNo_B = 150;
+    int initialTripNo_A = 101; //Starting trip for Manila
+    int initialTripNo_B = 150; //Starting trip for Laguna
 
     // Setting trip numbers and routes for the Manila to Laguna trip
     for (i=0; i<10; i++)
@@ -102,7 +100,7 @@ initializeBuses(struct Bus trips[22])
             trips[i].route[2] = 10040;
         }
 
-        trips[i].next = NULL;
+        trips[i].next = NULL; //Secondary safeguard to ensure all next pointers are null.
     }
 
     // Setting trip numbers for the Laguna to Manila trip
