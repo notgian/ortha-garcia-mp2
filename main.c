@@ -21,35 +21,6 @@ int main()
 	int screenState = 100;
     int nFullA = 0;
     int nFullB = 0;
-    
-    String20 john = "john";
-    String20 doe = "doe";
-    
-    for (i=0; i<MAX_TRIPS_MANILA-1; i++)
-    {
-        for (j=0; j<MAX_PASSENGERS; j++)
-        {
-            inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[i], 0);
-        }
-    }
-
-    for (i=MAX_TRIPS_MANILA; i<MAX_TRIPS-1; i++)
-    {
-        for (j=0; j<MAX_PASSENGERS; j++)
-        {
-            inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[i], 0);
-        }
-    }
-
-     for (j=1; j<MAX_PASSENGERS; j++)
-      {
-          inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS-1], 0);
-      }
-
-      for (j=1; j<MAX_PASSENGERS; j++)
-      {
-          inputPassenger(1, john, doe, 12313412, 10010, -1, &trips[MAX_TRIPS_MANILA-1], 0);
-      }
 
 	while (screenState > 0)
 	{
