@@ -32,8 +32,6 @@ int isValidTripNumber(int nTripNumber);
 
 void printDropOffPointFromCode(int code);
 
-int dropOffInRoute(int dropOff, int route);
-
 void clearScreen();
 
 void pauseAndContinueOnReturn();

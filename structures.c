@@ -26,10 +26,11 @@ createEmptyPassenger()
     return emptyPassenger;
 }
 
-/* setEmptyPassenger: Takes an array of passengers and sets them all to empty
+/* setEmptyPassengers: Takes an array of passengers and sets them all to empty
    @param *passengerList - array of passengers 
    @param n - number of passengers to set
    @return void
+   Pre-condition: n is less than the size of the passengerList
 */ 
 void 
 setEmptyPassengers(struct Passenger *passengerList, int n)
@@ -41,22 +42,12 @@ setEmptyPassengers(struct Passenger *passengerList, int n)
     }
 }
 
-/* setEmptyPassenger: Takes an array of passengers and sets passenger at index n to empty   
-   @param *passengerList - array of passengers 
-   @param n - index of passenger to set to empty
-   @return void
-*/ 
-void 
-setEmptyPassenger(struct Passenger *passengerList, int n)
-{
-    passengerList[n] = createEmptyPassenger();
-}
-
 /* initializeBuses: Takes an two arrays of Bus with size 10 and 12 respectively for Manila and Laguna trips. Initializes the values for all buses. 
                     NOTE - Contents of arrays do not matter, only size. They contents will be set by this function.
    @param busesManilaToLaguna - array of buses, size 10  
    @param busesLagunaToManila - index of buses, size 12
    @return void
+   Pre-condition: the trips array has a size of 22
 */ 
 void 
 initializeBuses(struct Bus trips[22])

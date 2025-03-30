@@ -44,8 +44,6 @@ struct Passenger createEmptyPassenger();
 
 void setEmptyPassengers(struct Passenger *passengerList, int n);
 
-void setEmptyPassenger(struct Passenger *passengerList, int n);
-
 void initializeBuses(struct Bus trips[22]);
 
 #endif 

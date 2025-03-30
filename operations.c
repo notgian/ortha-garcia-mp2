@@ -20,6 +20,7 @@ otherwise plagiarized the work of other students and/or persons.
 /* stringToInt: Takes a string and returns its equivalent in integer form
    @param str - string to convert to int
    @return int - the string in int form
+   Pre-conditon: the string passed only contains characters that can be considered valid numbers and the numbers are not negative
 */ 
 int stringToInt(String20 str)
 {
@@ -89,6 +90,7 @@ isTripFull(struct Bus bus)
    @param n          - number of total trips; only used for the loop
    @param tripNumber - trip number of the desired bus
    @return Bus*      - pointer to the bus with the corresponding trip number. Pointer is set to NULL if no bus is found.
+   Pre-condition: the trips have been initialized
 */ 
 struct Bus* getBusFromTripNumber(struct Bus trips[], int n, int tripNumber)
 {
@@ -108,6 +110,7 @@ struct Bus* getBusFromTripNumber(struct Bus trips[], int n, int tripNumber)
 /* displayTripList: displays the list of bus trips.
    @param nFull - determines if the special trips should be shown
    @return void
+   Pre-condition: the trips have been initialized
 */ 
 void 
 displayTripList(struct Bus trips[])
@@ -188,8 +191,9 @@ isValidTripNumber(int nTripNumber)
 }
 
 /* printDropOffPointFromCode: Takes in a drop off point code and prints out the string version of the drop off point
-   @param code - the drop off code
+   @param code - the drop-off code
    @return void
+   Pre-condition: the drop-off code is valid
 */
 void 
 printDropOffPointFromCode(int code)
@@ -214,6 +218,11 @@ printDropOffPointFromCode(int code)
 		printf("%-50s", "Gate 1: South Gate (LS Building Entrance)");
 }
 
+/* getDropOffPointFromCode: Takes in a drop off point code and prints out the string version of the drop off point
+   @param code - the drop-off code
+   @return void
+   Pre-condition: the drop-off code is valid
+*/
 void 
 getDropOffPointFromCode(int code, String50 name)
 {
@@ -237,6 +246,11 @@ getDropOffPointFromCode(int code, String50 name)
 		strcpy(name, "Gate 1: South Gate (LS Building Entrance)");
 }
 
+/* getDropOffPointFromString: Takes in a drop off point code and prints out the string version of the drop off point
+   @param code - the drop-off code
+   @return void
+   Pre-condition: the string is a valid drop-off point
+*/
 int
 getDropOffPointFromString(String50 string)
 {
@@ -261,20 +275,6 @@ getDropOffPointFromString(String50 string)
 		return 20050;
 	
 	return -1;
-}
-
-/* dropOffInRoute: Returns a value based on whether the specified drop off is in the specified route
-   @param dropOff - the specified drop-off point to search for
-   @param route   - the route to search the drop-off point for
-   @return int    - returns 1 if the drop-off point point is present in the route, 0 otherwise
-*/
-int
-dropOffInRoute(int dropOff, int route)
-{
-	// if (route == 100)
-
-	return 0;
-
 }
 
 /* clearScreen: Clears the screen with ANSI regex
@@ -309,6 +309,7 @@ void pauseAndContinueOnReturn()
    @param id           - id number of the passenger
    @param dropOffPoint - drop off point of the passenger, represented through an int
    @return void
+   Pre-condition: all data being passed is valid
 */ 
 void
 setPassenger(struct Passenger *passenger, int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int nReserve)
@@ -331,6 +332,7 @@ setPassenger(struct Passenger *passenger, int priority, String20 firstName, Stri
    @param seatNumber   - seat number (index) to board the passenger onto. (-1) indicates automatic seat assignment.
    @param bus          - pointer to the bus the passenger will be boarded onto
    @return void
+   Pre-condition: all data being passed is valid
 */ 
 void 
 inputPassenger(int priority, String20 firstName, String20 lastName, int id, int dropOffPoint, int seatNumber, struct Bus *bus, int nReserve)
@@ -549,6 +551,7 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 /* searchPassengerId: Takes the list of trips and searches for a specified id among the passengers in all trips
    @param trips - list of all the bus trips
    @return int  - returns 1 if a passenger with the specified id is found, 0 otherwise 
+   Pre-condition: the trips have been initialized
 */
 int
 searchPassengerId(struct Bus trips[], int searchId)
@@ -574,6 +577,7 @@ searchPassengerId(struct Bus trips[], int searchId)
 /* encodePassengerInformation: Combines the functions inputTripNumber and inputPassengerInformation and creates the logic for 
    @param trips - array of all the busses
    @return void
+   Pre-condition: the trips have been initialized
 */
 void 
 encodePassengerInformation(struct Bus trips[])
@@ -657,7 +661,6 @@ encodePassengerInformation(struct Bus trips[])
 		else
 			validInput = 1;
 	}
-	// int dropOffOptions = displayDropOff(bus->tripNumber); -- old 
 
 	int d;
 	int nDropOffOptions = 0;
@@ -704,6 +707,7 @@ encodePassengerInformation(struct Bus trips[])
    @param *nFullA - Represents whether or not Manila-Laguna are all full.
    @param *nFullB - Represents whether or not Laguna-Manila are all full.
    @return void
+   Pre-condition: the trips have been initialized
 */ 
 void getBusFull(struct Bus trips[], int *nFullA, int *nFullB)
 {
@@ -849,9 +853,10 @@ viewPassengerCount(struct Bus trips[])
 	pauseAndContinueOnReturn();
 }
 
-/* viewDropOffCount: Asks the user for a trip number and displays the number of passengers who will disembark on particular drop-off points.t
+/* viewDropOffCount: Asks the user for a trip number and displays the number of passengers who will disembark on particular drop-off points
    @param trips - list of bus trips for processing
    @return void
+   Pre-condition: the trips have been initialized
 */
 void 
 viewDropOffCount(struct Bus trips[])
@@ -900,6 +905,7 @@ viewDropOffCount(struct Bus trips[])
 /* viewPassengerInformation: Asks the user for a trip number and displays the trip's passenger information
    @param trips - list of bus trips for processing
    @return void
+   Pre-condition: the trips have been initialized
 */
 void 
 viewPassengerInformation(struct Bus trips[])
@@ -947,9 +953,10 @@ viewPassengerInformation(struct Bus trips[])
 	pauseAndContinueOnReturn();
 }
 
-/* viewPassengerInformation: Asks the user for a last name and searches through the trips and displays the passenger/s with the last name
+/* searchPassenger: Asks the user for a last name and searches through the trips and displays the passenger/s with the last name
    @param trips - list of bus trips for processing
    @return void
+   Pre-condition: the trips have been initialized
 */
 void 
 searchPassenger(struct Bus trips[])
@@ -1003,6 +1010,7 @@ searchPassenger(struct Bus trips[])
    @param *nPriority    - pointer to the priority variable to store the data
    @param *nDropOff     - pointer to drop-off point varialbe to store the data
    @return int          - returns the number of successfully scanned parameters
+   Pre-condition: the information in the file must be formatted properly
 */
 int scanPassengerInformation(FILE *fp, int *nTripNo, int *nEmbarkPoint, String20 lastName, String20 firstName, int *nId, int *nPriority, int *nDropOff)
 {
@@ -1028,9 +1036,10 @@ int scanPassengerInformation(FILE *fp, int *nTripNo, int *nEmbarkPoint, String20
 	return k;
 }
 
-/* loadPassengerFromFile: loads passenger information from a file and attempts to board them onto a trip
+/* loadPassengerFromFile: asks user for a filename and loads passenger information from the file and attempts to board them onto a trip
    @param trips - list of bus trips
    @return void
+   Pre-condition: the information in the file must be formatted properly
 */
 void loadPassengerFromFile(struct Bus trips[])
 {
@@ -1063,10 +1072,8 @@ void loadPassengerFromFile(struct Bus trips[])
 		String20 firstName, lastName;
 		String50 EmbarkString;
 		String50 DropOffString;
-		// String20 tempString;
 
 		// Reading information from file 
-
 		fscanf(fp, " Trip Number: %3d", &nTripNo);
 		fscanf(fp, " Embarkation Point: %50[^\n\r]", EmbarkString);
 		nEmbarkPoint = getDropOffPointFromString(EmbarkString);
@@ -1143,6 +1150,10 @@ void loadPassengerFromFile(struct Bus trips[])
 	pauseAndContinueOnReturn();
 }
 
+/* loadTripFromFile: asks the user for a filename and loads trip information from the file and displays the information for in-program viewing.
+   @return void
+   Pre-condition: the information in the file must be formatted properly
+*/
 void loadTripFromFile()
 {
 	clearScreen();
@@ -1291,7 +1302,6 @@ arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 	printf("Select an Option: \n");
 
 	char selection;
-	printf("\n%d, %d\n", *nFullA, *nFullB);
 	scanf(" %c", &selection);
 	printf("\n");
 
