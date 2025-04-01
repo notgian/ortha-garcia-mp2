@@ -1,1 +1,1 @@
-gcc "main.c" -o "main.exe" -std=c99 -Wall -lm
+gcc "GarciaS-OrthaC.c" -o "main.exe" -std=c99 -Wall -lm

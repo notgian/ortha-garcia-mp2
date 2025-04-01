@@ -1,0 +1,21 @@
+Trip Number: 101
+Embarkation Point: Gate 1: South Gate (LS Building Entrance)
+Passenger Name: Ortha, Gian
+ID Number: 12414697
+Priority: 4
+Drop-Off Point: Phase 5, San Jose Vilage
+
+Trip Number: 101
+Embarkation Point: Gate 1: South Gate (LS Building Entrance)
+Passenger Name: Doe, John
+ID Number: 12412345
+Priority: 6
+Drop-Off Point: Phase 5, San Jose Vilage
+
+Trip Number: 101
+Embarkation Point: Gate 1: South Gate (LS Building Entrance)
+Passenger Name: Garcia, Sky
+ID Number: 12409537
+Priority: 4
+Drop-Off Point: Phase 5, San Jose Vilage
+

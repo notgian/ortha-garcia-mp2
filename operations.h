@@ -32,6 +32,10 @@ int isValidTripNumber(int nTripNumber);
 
 void printDropOffPointFromCode(int code);
 
+void getDropOffPointFromCode(int code, String50 name);
+
+int getDropOffPointFromString(String50 string);
+
 void clearScreen();
 
 void pauseAndContinueOnReturn();
@@ -64,15 +68,13 @@ void viewPassengerCount(struct Bus trips[]);
 
 void viewDropOffCount(struct Bus trips[]);
 
-void viewDropOffCount(struct Bus trips[]);
-
 void viewPassengerInformation(struct Bus trips[]);
 
 void searchPassenger(struct Bus trips[]);
 
-int scanPassengerInformation(FILE *fp, int *nTripNo, int *nEmbarkPoint, String20 lastName, String20 firstName, int *nId, int *nPriority, int *nDropOff);
-
 void loadPassengerFromFile(struct Bus trips[]);
+
+void loadTripFromFile();
 
 /* 
 	======================

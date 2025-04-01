@@ -18,7 +18,7 @@ otherwise plagiarized the work of other students and/or persons.
 
 typedef char String20[21];
 typedef char String50[51];
-typedef char String100[51];
+typedef char String100[101];
 
 struct Passenger {
     int onboard;

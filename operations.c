@@ -419,11 +419,9 @@ inputPassenger(int priority, String20 firstName, String20 lastName, int id, int 
 			// Checks for displaced passenger
 			if (displacedPassenger->id == -1) // No passengers could be displaced
 			{
-				if (nReserve && seatNumber != -1) // Happens if the seat chosen is already occupied by a reserved passenger with a higher priority
-				{
+				if (nReserve && seatNumber != -1) // Happens if the seat chosen is already occupied by a reserved passenger with a higher priority 
 					printf("Cannot board! The seat %d is already being occupied by a higher-priority passenger who has reserved that seat. Please try again and pick a different seat. Aborting the boarding of %s %s\n", seatNumber, firstName, lastName);
-					bus->nReserveCount--;
-				}
+
 				else // Board on next trip
 				{
 					printf("There are no more available seats for passenger %s %s in bus AE-%d. Attempting to board them on the next trip.\n", firstName, lastName, bus->tripNumber);
@@ -840,6 +838,8 @@ displayPassengerCount(struct Bus bus)
 			}
 		}
 	printf("Passenger Count: %d\n", getPassengerCount(bus));		
+	if (nPassengerCount == 16) 
+		printf("Trip is full!\n");
 }
 
 /* viewPassengerCount: Asks the user for a trip number and views the passenger count for the corresponding trip number
@@ -997,45 +997,9 @@ searchPassenger(struct Bus trips[])
 	}
 
 	if (!found)
-		printf("No passenger(s) with last name %s found!\n", trips[i].passengers[k].lastName);
+		printf("No passenger(s) with last name %s found!\n", lastNameSearch);
 	
 	pauseAndContinueOnReturn();
-}
-
-/* scanPassengerInformation: scans a passengers information from a file into particular variables
-   @param fp            - file pointer of the file to be scanned
-   @param *nTripNo      - pointer to the trip number variable to store the data
-   @param *nEmbarkPoint - pointer to the embark point variable to store the data
-   @param lastName      - last name string to store the data
-   @param firstName     - first name string to store the data
-   @param *nId          - pointer to the id variable to store the data
-   @param *nPriority    - pointer to the priority variable to store the data
-   @param *nDropOff     - pointer to drop-off point varialbe to store the data
-   @return int          - returns the number of successfully scanned parameters
-   Pre-condition: the information in the file must be formatted properly
-*/
-int scanPassengerInformation(FILE *fp, int *nTripNo, int *nEmbarkPoint, String20 lastName, String20 firstName, int *nId, int *nPriority, int *nDropOff)
-{
-	/*
-		Format for scanning passenger information:
-		<trip number>
-		<embarkation point>
-		<passenger first name>, <passenger last name>
-		<id number>
-		<priority number>
-		<drop-off point>
-	*/
-	int k = 0;
-
-	k += fscanf(fp, " %d", nTripNo);
-	k += fscanf(fp, " %d", nEmbarkPoint);
-	k += fscanf(fp, " %[^,],", lastName);
-	k += fscanf(fp, " %s", firstName);
-	k += fscanf(fp, " %d", nId);
-	k += fscanf(fp, " %d", nPriority);
-	k += fscanf(fp, " %d", nDropOff);
-
-	return k;
 }
 
 /* loadPassengerFromFile: asks user for a filename and loads passenger information from the file and attempts to board them onto a trip
@@ -1196,7 +1160,9 @@ void loadTripFromFile()
 				printf("\n");
 			}
 			
-		}		
+		}
+		
+		fclose(fp);	
 	}
 
 	pauseAndContinueOnReturn();
