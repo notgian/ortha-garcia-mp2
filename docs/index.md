@@ -125,7 +125,7 @@ The actual definition is as follows:
 <h3 id="s-struct-bus">struct Bus</h3>
 Structure for a bus with the following properties and values when initialized
 
-<ul>
+
 
 <li> <code>int tripNumber</code> defaults to <code>0</code> when initialized and represents a bus' trip number for this specific implementation of the program, the following hold true:</li>
 
