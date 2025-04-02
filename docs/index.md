@@ -125,7 +125,7 @@ The actual definition is as follows:
 <h3 id="s-struct-bus">struct Bus</h3>
 Structure for a bus with the following properties and values when initialized
 
-
+<ul>
 
 <li> <code>int tripNumber</code> defaults to <code>0</code> when initialized and represents a bus' trip number for this specific implementation of the program, the following hold true:</li>
 
@@ -135,7 +135,9 @@ Structure for a bus with the following properties and values when initialized
 <li> Trips 110 and 161 are special trips and are handled slightly differently as specified throughout this documentaiton
 </ul>
 These trip numbers are also strictly integers in code, but are often displayed with "AE" preceding it (i.e. AE-101) for the actual trip number
+</ul>
 
+<ul>
 <li> <code>int dispatchable</code> is a bool-type that defaults to <code>1</code> upon initialization, except for the special trips (110 and 161) where it initializes to <code>0</code>.</li>
 
 <li> <code>int route[]</code> is an integer-array with a length of <code>MAX_ROUTE_LENGTH</code>. Each element is initialized to 0, then set to the correct values. The first value always represents the <em>embarkation point</em>. Embarkation points share the same internal implementation despite using functions for drop-off points. Depending on the route this will be initialized differently.</li>
@@ -146,7 +148,7 @@ These trip numbers are also strictly integers in code, but are often displayed w
 <ul>
 <li>Embarkation Point : <code>20050</code> </li>
 <li>Drop-Off Point 1  : <code>10010</code> </li>
-<li>Drop-Off Point 2  : <code>10020</code> </li>
+<lThese trip numbers are also strictly integers in code, but are often displayed with "AE" preceding it (i.e. AE-101) for the actual trip numberi>Drop-Off Point 2  : <code>10020</code> </li>
 <li>Drop-Off Point 3  : <code>10040</code> </li>
 </ul>
 
