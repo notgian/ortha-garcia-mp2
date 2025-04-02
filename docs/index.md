@@ -126,67 +126,54 @@ The actual definition is as follows:
 Structure for a bus with the following properties and values when initialized
 
 <ul>
-
-<li> <code>int tripNumber</code> defaults to <code>0</code> when initialized and represents a bus' trip number for this specific implementation of the program, the following hold true:</li>
-
-<ul>
-<li> Manila to Laguna trips: 101-110 </li>
-<li> Laguna to Manila trips: 150-161 </li>
-<li> Trips 110 and 161 are special trips and are handled slightly differently as specified throughout this documentaiton
-</ul>
-These trip numbers are also strictly integers in code, but are often displayed with "AE" preceding it (i.e. AE-101) for the actual trip number
+    <li> <code>int tripNumber</code> defaults to <code>0</code> when initialized and represents a bus' trip number for this specific implementation of the program, the following hold true:</li>
+    <ul>
+    <li> Manila to Laguna trips: 101-110 </li>
+    <li> Laguna to Manila trips: 150-161 </li>
+    <li> Trips 110 and 161 are special trips and are handled slightly differently as specified throughout this documentaiton
+    </ul>
+    These trip numbers are also strictly integers in code, but are often displayed with "AE" preceding it (i.e. AE-101) for the actual trip number
 </ul>
 
 <ul>
-<li> <code>int dispatchable</code> is a bool-type that defaults to <code>1</code> upon initialization, except for the special trips (110 and 161) where it initializes to <code>0</code>.</li>
-
-<li> <code>int route[]</code> is an integer-array with a length of <code>MAX_ROUTE_LENGTH</code>. Each element is initialized to 0, then set to the correct values. The first value always represents the <em>embarkation point</em>. Embarkation points share the same internal implementation despite using functions for drop-off points. Depending on the route this will be initialized differently.</li>
-
-<ul> 
-<li><b>AE-101, AE-103, AE-105, AE-107</b></li>
-
-<ul>
-<li>Embarkation Point : <code>20050</code> </li>
-<li>Drop-Off Point 1  : <code>10010</code> </li>
-<lThese trip numbers are also strictly integers in code, but are often displayed with "AE" preceding it (i.e. AE-101) for the actual trip numberi>Drop-Off Point 2  : <code>10020</code> </li>
-<li>Drop-Off Point 3  : <code>10040</code> </li>
-</ul>
-
-<li><b>AE-102, AE-104, AE-106, AE-108, AE-110 (Special trip)</b></li>
-
-<ul>
-<li>Embarkation Point : <code>20050</code> </li>
-<li>Drop-Off Point 1  : <code>10030</code> </li>
-<li>Drop-Off Point 2  : <code>10040</code> </li>
-</ul>
-
-<li><b>AE-151, AE-153, AE-155, AE-157, AE-159, AE-161 (Special trip)</b></li>
-
-<ul>
-<li>Embarkation Point : <code>10040</code></li>
-<li>Drop-Off Point 1  : <code>20010</code></li>
-<li>Drop-Off Point 2  : <code>20030</code></li>
-<li>Drop-Off Point 3  : <code>20040</code></li>
-<li>Drop-Off Point 4  : <code>20050</code></li>
-</ul>
-
-<li><b>AE-150, AE-152, AE-154 AE-156, AE-158, AE-160</b></li>
-
-<ul>
-<li>Embarkation Point : <code>10040</code> </li>
-<li>Drop-Off Point 1  : <code>20020</code> </li>
-<li>Drop-Off Point 2  : <code>20030</code> </li>
-<li>Drop-Off Point 3  : <code>20040</code> </li>
-<li>Drop-Off Point 4  : <code>20050</code> </li>
-</ul>
-
-</ul>
-
-<li> <code>int nReserveCount</code> default to <code>0</code> when initialized. Represents the number of passengers that have reserved on the bus.</li>
-<li> <code>Passenger passengers[]</code> is an array of passengers with a length of <code>MAX_PASSENGERS</code>. Each passenger is also set to empty when initialized.</li> 
-<li> <code>Bus *next</code> is initialzed to <code>NULL</code> and is set accordingly. It is a pointer to the next bus. <code>NULL</code> pointer means that there is no bus in the line of trips after the current bus. The linking starts from AE0101, which links to AE-102, then to AE-103, up to AE-109. Upon initialization, AE-110 is not linked because it is not initially dispatchable. This is similar for the other line of trips. AE-150 links to AE-151, linking to AE-152 up to AE-160. AE-161 is not linked upon initialization.</li>
-
-</ul>
+    <li> <code>int dispatchable</code> is a bool-type that defaults to <code>1</code> upon initialization, except for the special trips (110 and 161) where it initializes to <code>0</code>.</li>
+    <li> <code>int route[]</code> is an integer-array with a length of <code>MAX_ROUTE_LENGTH</code>. Each element is initialized to 0, then set to the correct values. The first value always represents the <em>embarkation point</em>. Embarkation points share the same internal implementation despite using functions for drop-off points. Depending on the route this will be initialized differently.</li>
+    <li>These trip numbers are also strictly integers in code, but are often displayed with "AE" preceding it (i.e. AE-101) for the actual trip number</li>
+    <ul> 
+        <li><b>AE-101, AE-103, AE-105, AE-107</b></li>
+        <ul>
+            <li>Embarkation Point : <code>20050</code> </li>
+            <li>Drop-Off Point 1  : <code>10010</code> </li>
+            <li>Drop-Off Point 2  : <code>10020</code> </li>
+            <li>Drop-Off Point 3  : <code>10040</code> </li>
+        </ul>
+        <li><b>AE-102, AE-104, AE-106, AE-108, AE-110 (Special trip)</b></li>
+        <ul>
+            <li>Embarkation Point : <code>20050</code> </li>
+            <li>Drop-Off Point 1  : <code>10030</code> </li>
+            <li>Drop-Off Point 2  : <code>10040</code> </li>
+        </ul>
+        <li><b>AE-151, AE-153, AE-155, AE-157, AE-159, AE-161 (Special trip)</b></li>
+        <ul>
+            <li>Embarkation Point : <code>10040</code></li>
+            <li>Drop-Off Point 1  : <code>20010</code></li>
+            <li>Drop-Off Point 2  : <code>20030</code></li>
+            <li>Drop-Off Point 3  : <code>20040</code></li>
+            <li>Drop-Off Point 4  : <code>20050</code></li>
+        </ul>
+        <li><b>AE-150, AE-152, AE-154 AE-156, AE-158, AE-160</b></li>
+        <ul>
+            <li>Embarkation Point : <code>10040</code> </li>
+            <li>Drop-Off Point 1  : <code>20020</code> </li>
+            <li>Drop-Off Point 2  : <code>20030</code> </li>
+            <li>Drop-Off Point 3  : <code>20040</code> </li>
+            <li>Drop-Off Point 4  : <code>20050</code> </li>
+        </ul>
+    </ul>
+    <li> <code>int nReserveCount</code> default to <code>0</code> when initialized. Represents the number of passengers that have reserved on the bus.</li>
+    <li> <code>Passenger passengers[]</code> is an array of passengers with a length of <code>MAX_PASSENGERS</code>. Each passenger is also set to empty when initialized.</li> 
+    <li> <code>Bus *next</code> is initialzed to <code>NULL</code> and is set accordingly. It is a pointer to the next bus. <code>NULL</code> pointer means that there is no bus in the line of trips after the current bus. The linking starts from AE0101, which links to AE-102, then to AE-103, up to AE-109. Upon initialization, AE-110 is not linked because it is not initially dispatchable. This is similar for the other line of trips. AE-150 links to AE-151, linking to AE-152 up to AE-160. AE-161 is not linked upon initialization.</li>
+</ul>   
 
 <h2 id="s-funcs">Functions</h2>
 
