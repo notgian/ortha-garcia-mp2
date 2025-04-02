@@ -15,6 +15,14 @@
 <li> <a href="#s-funcs">Functions</a></li>
 </ul>
 
+<li> <a href="#o-operations.h"> operations.h </a> </li>
+<ul>
+    <li> <a href="#o-helper-funcs"> Helper Functions </a> </li>
+    <li> <a href="#o-bus-pass-funcs"> Bus and Passenger Functions </a> </li>
+    <li> <a href="#o-passenger-funcs"> Passenger Functions</a> </li>
+    <li> <a href="#o-personnel-funcs"> Arrow Personnel Functions</a> </li>
+</ul>
+<li> <a href="#m-main-func"> main </a> </li>
 </ul>
 
 <br />
