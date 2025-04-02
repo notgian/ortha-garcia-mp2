@@ -128,9 +128,9 @@ Structure for a bus with the following properties and values when initialized
 <ul>
     <li> <code>int tripNumber</code> defaults to <code>0</code> when initialized and represents a bus' trip number for this specific implementation of the program, the following hold true:</li>
     <ul>
-    <li> Manila to Laguna trips: 101-110 </li>
-    <li> Laguna to Manila trips: 150-161 </li>
-    <li> Trips 110 and 161 are special trips and are handled slightly differently as specified throughout this documentaiton
+        <li> Manila to Laguna trips: 101-110 </li>
+        <li> Laguna to Manila trips: 150-161 </li>
+        <li> Trips 110 and 161 are special trips and are handled slightly differently as specified throughout this documentaiton</li>
     </ul>
     These trip numbers are also strictly integers in code, but are often displayed with "AE" preceding it (i.e. AE-101) for the actual trip number
 </ul>
