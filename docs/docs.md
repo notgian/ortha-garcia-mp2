@@ -612,15 +612,20 @@ Similarly to the main menu function, the user selects the action by inputting th
 
     int passengerMenu(struct Bus trips[], int *nFullA, int *nFullB)
 
-<h3> int arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB) </h3>
-Displays the passenger menu and prompts the user with two choices:
+<h3>arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB) </h3>
+Displays the passenger menu and prompts the user with seven choices:
 
 <ol>
-    <li>To input a passenger</li>
+    <li>To view a trip's passenger count</li>
+    <li>To view a trip's drop-off count</li>
+    <li>To view a trip's passenger information</li>
+    <li>To load a passenger from a file</li>
+    <li>To search for a passenger(s)</li>
+    <li>To Load a recent trip from a file</li>
     <li>Return to the main menu</li>
 </ol>
 
-Similarly to the main menu function, the user selects the action by inputting the corresponding number to their choice. Depending on the choice, the function will output a certain <code>int</code> that will be used to process the next screen function. The screen code for the passenger menu is <code>200</code>.
+Similarly to the main menu function, the user selects the action by inputting the corresponding number to their choice. Depending on the choice, the function will output a certain <code>int</code> that will be used to process the next screen function. The screen code for the arrows personnel menu is <code>300</code>.
 
 <ul>
 <li> <code>trips[]</code> is the array of trips</li>
@@ -630,6 +635,29 @@ Similarly to the main menu function, the user selects the action by inputting th
 
     int arrowsPersonnelMenu(struct Bus trips[], int *nFullA, int *nFullB)
 
+<h2 id="m-main-func">The Main Function</h2>
 
+The main function first initializes important variables to be used by the program such as the <code>trips</code> array and both <code>nFullA</code> and <code>nFullB</code>.
 
-<h2 id="m-main-func">The Main Function<h2>
+The majority of the program's function runs in a while loop, managing the screen that the user currently has open
+
+    while (screenState > 0)
+    {
+        int parentMenu = screenState - screenState % 100;
+
+        if (parentMenu == 100) // Selected menu is main menu
+            screenState = mainMenu();
+        
+        else if (parentMenu == 200) // Selected menu is passenger
+        {
+            screenState = passengerMenu(trips, &nFullA, &nFullB);
+        }
+        else if (parentMenu == 300) // Selected Menu is arrow personnel
+        {
+            screenState = arrowsPersonnelMenu(trips, &nFullA, &nFullB);
+        }
+    }
+
+The loop will run until the <code>mainMenu</code> function returns <code>-1</code> to terminate the loop. 
+
+The final thing the program does is attempt to save the trip information to a file. The user is prompted to input a date in the format <code>dd-mm-yyyy</code>. The program validates that the input is correctly formatted and the date input is valid, and then saves the file with the filename <code>dd-mm-yy.txt</code> in the directory where the application was run.
